@@ -1,0 +1,2913 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<style>
+:root{
+  --black:#0a0a0c;
+  --panel:#141417;
+  --panel-2:#1c1c20;
+  --line:#2e2e34;
+  --white:#f5f5f0;
+  --gray:#8a8a92;
+  --gray-dim:#5c5c63;
+  --amber:#d4a843;
+  --red:#b3413a;
+  --green:#4a7c59;
+  --mono:'JetBrains Mono','SF Mono',Consolas,monospace;
+  --sans:'Inter',-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:var(--sans);
+  background:var(--black);
+  color:var(--white);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+#root{min-height:100vh;}
+
+/* ---------- LOGIN ---------- */
+.login-screen{
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;background:
+    radial-gradient(ellipse at 50% 0%, rgba(212,168,67,0.05), transparent 60%),
+    var(--black);
+  position:relative;
+}
+.login-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size:40px 40px;pointer-events:none;
+}
+.login-box{
+  width:100%;max-width:380px;position:relative;z-index:1;
+}
+.brand-mark{
+  font-family:var(--mono);font-size:11px;letter-spacing:4px;color:var(--amber);
+  text-transform:uppercase;margin-bottom:8px;text-align:center;
+}
+.brand-name{
+  font-family:var(--sans);font-weight:800;font-size:28px;letter-spacing:1px;
+  text-align:center;margin-bottom:4px;
+}
+.brand-sub{
+  font-family:var(--mono);font-size:12px;color:var(--gray);text-align:center;
+  letter-spacing:2px;text-transform:uppercase;margin-bottom:36px;
+}
+.login-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:2px;padding:28px;
+}
+.login-label{
+  font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--gray);
+  text-transform:uppercase;margin-bottom:10px;display:block;
+}
+.login-input{
+  width:100%;background:var(--black);border:1px solid var(--line);color:var(--white);
+  padding:14px 16px;font-size:16px;border-radius:2px;font-family:var(--mono);
+  letter-spacing:2px;
+}
+.login-input:focus{outline:none;border-color:var(--amber);}
+.login-btn{
+  width:100%;background:var(--amber);color:var(--black);border:none;
+  padding:14px;font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;
+  border-radius:2px;margin-top:16px;cursor:pointer;font-family:var(--sans);
+  transition:opacity 0.15s;
+}
+.login-btn:active{opacity:0.8;}
+.login-error{
+  color:var(--red);font-family:var(--mono);font-size:12px;margin-top:12px;
+  text-align:center;letter-spacing:1px;
+}
+.login-footer{
+  text-align:center;margin-top:24px;font-family:var(--mono);font-size:10px;
+  color:var(--gray-dim);letter-spacing:1px;
+}
+
+/* ---------- APP SHELL ---------- */
+.app{display:flex;flex-direction:column;min-height:100vh;}
+.header{
+  background:var(--panel);border-bottom:1px solid var(--line);
+  padding:14px 16px;position:sticky;top:0;z-index:50;
+}
+.header-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+.header-title{font-weight:800;font-size:17px;letter-spacing:1px;line-height:1.2;}
+.header-tag{
+  font-family:var(--mono);font-size:10px;color:var(--amber);letter-spacing:2px;
+  text-transform:uppercase;margin-top:2px;
+}
+.logout-btn{
+  background:transparent;border:1px solid var(--line);color:var(--gray);
+  font-family:var(--mono);font-size:10px;letter-spacing:1px;padding:7px 12px;
+  border-radius:2px;cursor:pointer;text-transform:uppercase;white-space:nowrap;
+}
+.header-meta{
+  display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;
+}
+.meta-item{font-family:var(--mono);font-size:11px;color:var(--gray);}
+.meta-item b{color:var(--white);font-weight:600;}
+.banner{
+  margin-top:10px;background:var(--panel-2);border-left:3px solid var(--amber);
+  padding:8px 12px;font-size:13px;display:flex;align-items:center;gap:8px;
+}
+.banner-pin{color:var(--amber);font-family:var(--mono);font-size:10px;letter-spacing:1px;}
+
+/* ---------- NAV ---------- */
+.nav{
+  display:flex;overflow-x:auto;background:var(--panel);border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:40;-webkit-overflow-scrolling:touch;
+}
+.nav::-webkit-scrollbar{display:none;}
+.nav-item{
+  flex:0 0 auto;padding:12px 16px;font-family:var(--mono);font-size:11px;
+  letter-spacing:1.5px;color:var(--gray);text-transform:uppercase;cursor:pointer;
+  border-bottom:2px solid transparent;white-space:nowrap;
+}
+.nav-item.active{color:var(--amber);border-bottom-color:var(--amber);}
+
+/* ---------- MAIN ---------- */
+.main{flex:1;padding:16px;max-width:760px;width:100%;margin:0 auto;}
+.section-title{
+  font-family:var(--mono);font-size:11px;letter-spacing:3px;color:var(--amber);
+  text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px;
+}
+.section-title::after{content:'';flex:1;height:1px;background:var(--line);}
+.card{
+  background:var(--panel);border:1px solid var(--line);border-radius:2px;
+  padding:18px;margin-bottom:14px;
+}
+.card-row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);}
+.card-row:last-child{border-bottom:none;}
+.card-row .label{font-family:var(--mono);font-size:11px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;}
+.card-row .value{font-size:14px;font-weight:600;text-align:right;}
+.big-stat{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;
+  flex-wrap:wrap;gap:10px;
+}
+.big-stat .num{font-size:42px;font-weight:800;line-height:1;font-family:var(--mono);}
+.big-stat .sub{font-family:var(--mono);font-size:11px;color:var(--gray);letter-spacing:2px;text-transform:uppercase;margin-top:4px;}
+.status-tag{
+  font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:4px 10px;border-radius:2px;border:1px solid var(--line);
+}
+.status-shooting{color:var(--amber);border-color:var(--amber);}
+.status-completed{color:var(--green);border-color:var(--green);}
+.status-upcoming{color:var(--gray);}
+.status-changed{color:var(--red);border-color:var(--red);}
+
+/* ---------- BUTTONS / FORMS ---------- */
+.btn{
+  background:var(--amber);color:var(--black);border:none;font-weight:700;
+  font-size:13px;letter-spacing:1px;text-transform:uppercase;padding:12px 18px;
+  border-radius:2px;cursor:pointer;font-family:var(--sans);
+}
+.btn-secondary{
+  background:transparent;color:var(--white);border:1px solid var(--line);
+  font-weight:600;font-size:13px;letter-spacing:1px;text-transform:uppercase;
+  padding:12px 18px;border-radius:2px;cursor:pointer;font-family:var(--sans);
+}
+.btn-danger{
+  background:transparent;color:var(--red);border:1px solid var(--red);
+  font-weight:600;font-size:12px;letter-spacing:1px;text-transform:uppercase;
+  padding:10px 14px;border-radius:2px;cursor:pointer;font-family:var(--sans);
+}
+.btn-sm{padding:7px 12px;font-size:11px;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+.form-group{margin-bottom:14px;}
+.form-label{
+  display:block;font-family:var(--mono);font-size:11px;letter-spacing:1.5px;
+  color:var(--gray);text-transform:uppercase;margin-bottom:6px;
+}
+.form-input,.form-select,.form-textarea{
+  width:100%;background:var(--black);border:1px solid var(--line);color:var(--white);
+  padding:11px 12px;font-size:14px;border-radius:2px;font-family:var(--sans);
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--amber);}
+.form-textarea{resize:vertical;min-height:70px;}
+.form-row{display:flex;gap:10px;}
+.form-row > *{flex:1;}
+.empty-state{
+  text-align:center;padding:36px 16px;color:var(--gray-dim);font-family:var(--mono);
+  font-size:12px;letter-spacing:1px;
+}
+.pill{
+  display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:1px;
+  text-transform:uppercase;color:var(--amber);border:1px solid var(--amber);
+  padding:2px 8px;border-radius:2px;margin-right:6px;
+}
+
+/* ---------- ANNOUNCEMENTS / WALL ---------- */
+.msg-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:2px;padding:14px;margin-bottom:10px;
+}
+.msg-card.pinned{border-color:var(--amber);}
+.msg-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px;}
+.msg-author{font-weight:700;font-size:13px;}
+.msg-meta{font-family:var(--mono);font-size:10px;color:var(--gray-dim);letter-spacing:1px;}
+.msg-body{font-size:14px;line-height:1.5;color:#dcdcd6;}
+.msg-tags{margin-top:8px;}
+.msg-actions{margin-top:10px;display:flex;gap:8px;}
+
+/* ---------- TABLES / LIST ITEMS ---------- */
+.list-item{
+  background:var(--panel);border:1px solid var(--line);border-radius:2px;padding:14px;margin-bottom:10px;
+}
+.list-item-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px;}
+.list-item-title{font-weight:700;font-size:14px;}
+.list-item-sub{font-family:var(--mono);font-size:11px;color:var(--gray);margin-top:2px;}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+.detail-grid .label{font-family:var(--mono);font-size:10px;color:var(--gray-dim);letter-spacing:1px;text-transform:uppercase;}
+.detail-grid .value{font-size:13px;margin-top:2px;}
+
+/* ---------- CHECKLIST ---------- */
+.check-item{
+  display:flex;align-items:center;gap:12px;padding:12px;background:var(--panel);
+  border:1px solid var(--line);border-radius:2px;margin-bottom:8px;cursor:pointer;
+}
+.check-box{
+  width:20px;height:20px;border:1px solid var(--gray);border-radius:2px;flex:0 0 20px;
+  display:flex;align-items:center;justify-content:center;font-size:13px;
+}
+.check-box.checked{background:var(--green);border-color:var(--green);color:var(--black);font-weight:700;}
+.check-label{font-size:14px;}
+.check-label.checked{color:var(--gray-dim);text-decoration:line-through;}
+
+/* ---------- LOGIN GATE (admin) ---------- */
+.tabs-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.tab-btn{
+  background:transparent;border:1px solid var(--line);color:var(--gray);
+  font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;
+  padding:8px 14px;border-radius:2px;cursor:pointer;
+}
+.tab-btn.active{color:var(--amber);border-color:var(--amber);}
+
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;
+  justify-content:center;z-index:100;padding:16px;
+}
+.modal{
+  background:var(--panel);border:1px solid var(--line);border-radius:2px;padding:24px;
+  max-width:420px;width:100%;max-height:90vh;overflow-y:auto;
+}
+.modal h3{font-size:16px;margin-bottom:14px;letter-spacing:1px;}
+.warn-text{font-size:13px;color:var(--gray);line-height:1.6;margin-bottom:18px;}
+
+.loading-msg{
+  text-align:center;padding:60px 20px;font-family:var(--mono);font-size:12px;
+  color:var(--gray);letter-spacing:2px;text-transform:uppercase;
+}
+.field-display{font-size:14px;}
+.dept-head-block{
+  border-left:2px solid var(--amber);padding-left:12px;margin-top:10px;
+}
+@media (max-width:480px){
+  .detail-grid{grid-template-columns:1fr;}
+  .big-stat .num{font-size:34px;}
+}
+
+/* ---------- ONBOARDING ---------- */
+.onboard-screen{
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;background:var(--black);position:relative;
+}
+.onboard-box{width:100%;max-width:440px;position:relative;z-index:1;}
+.dept-group-label{
+  font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--gray-dim);
+  text-transform:uppercase;margin:14px 0 6px;
+}
+
+/* ---------- URGENT ALERT ---------- */
+.urgent-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.8);display:flex;align-items:center;
+  justify-content:center;z-index:200;padding:16px;
+}
+.urgent-box{
+  background:var(--panel);border:2px solid var(--red);border-radius:2px;padding:24px;
+  max-width:420px;width:100%;
+}
+.urgent-label{
+  font-family:var(--mono);font-size:11px;letter-spacing:3px;color:var(--red);
+  text-transform:uppercase;margin-bottom:10px;font-weight:700;
+}
+.urgent-text{font-size:16px;line-height:1.5;margin-bottom:18px;}
+
+/* ---------- WELCOME / HOME ---------- */
+.welcome-card{
+  background:var(--panel);border:1px solid var(--amber);border-radius:2px;padding:18px;margin-bottom:14px;
+}
+.welcome-name{font-size:18px;font-weight:800;margin-bottom:4px;}
+.welcome-meta{font-family:var(--mono);font-size:11px;color:var(--gray);letter-spacing:1px;margin-bottom:2px;}
+.stat-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.stat-box{
+  flex:1;min-width:90px;background:var(--black);border:1px solid var(--line);border-radius:2px;
+  padding:10px;text-align:center;
+}
+.stat-box .stat-num{font-family:var(--mono);font-size:22px;font-weight:800;color:var(--amber);}
+.stat-box .stat-label{font-family:var(--mono);font-size:9px;letter-spacing:1px;color:var(--gray);text-transform:uppercase;margin-top:2px;}
+
+/* ---------- NOTIFICATIONS / MESSAGE CENTER ---------- */
+.notif-badge{
+  display:inline-flex;align-items:center;justify-content:center;background:var(--red);color:var(--white);
+  font-family:var(--mono);font-size:10px;font-weight:700;border-radius:50%;width:18px;height:18px;
+  margin-left:6px;
+}
+.notif-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:2px;padding:14px;margin-bottom:10px;
+  position:relative;
+}
+.notif-card.unread{border-left:3px solid var(--amber);}
+.notif-card.urgent{border-color:var(--red);}
+.notif-target{font-family:var(--mono);font-size:10px;letter-spacing:1px;color:var(--amber);text-transform:uppercase;margin-bottom:6px;}
+.read-status{
+  font-family:var(--mono);font-size:11px;color:var(--gray);letter-spacing:1px;margin-top:8px;
+}
+.read-list{
+  margin-top:8px;font-size:12px;color:var(--gray);max-height:140px;overflow-y:auto;
+  border-top:1px solid var(--line);padding-top:8px;
+}
+.read-list-row{display:flex;justify-content:space-between;padding:3px 0;}
+.read-yes{color:var(--green);}
+.read-no{color:var(--gray-dim);}
+
+/* ---------- SEND MESSAGE FORM ---------- */
+.target-select-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+
+/* ---------- DASHBOARD CARDS ---------- */
+.dash-tile{
+  background:var(--panel);border:1px solid var(--line);border-radius:2px;padding:14px;margin-bottom:10px;
+}
+.dash-tile-title{
+  font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--amber);
+  text-transform:uppercase;margin-bottom:10px;
+}
+.version-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);}
+.version-row:last-child{border-bottom:none;}
+.version-tag{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--amber);}
+.version-meta{font-family:var(--mono);font-size:10px;color:var(--gray);}
+</style>
+
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel" data-presets="env,react">
+const {useState,useEffect,useCallback} = React;
+
+const DEPARTMENT_TREE = {
+  "Cast":["Lead Actor","Supporting Actor","Day Player","Background"],
+  "Producers":["Executive Producer","Producer","Co-Producer","Associate Producer"],
+  "Director Team":["Director","1st AD","2nd AD","Script Supervisor"],
+  "Camera":["DP","Camera Operator","1st AC","2nd AC","DIT"],
+  "G&E":["Gaffer","Key Grip","Grip","Electric"],
+  "Sound":["Production Sound Mixer","Boom Operator"],
+  "Art Department":["Production Designer","Art Director","Props"],
+  "Wardrobe":["Wardrobe Supervisor","Costumer","Set Costumer"],
+  "Hair & Makeup":["Key Makeup Artist","Key Hair Stylist","Makeup Artist","Hair Stylist"],
+  "Locations":["Location Manager","Assistant Location Manager","Location Scout"],
+  "Transportation":["Transportation Coordinator","Driver"],
+  "Production Assistants":["Key PA","Set PA","Office PA"],
+  "Marketing / BTS":["BTS Photographer","Social Media Coordinator","Marketing Lead"],
+  "Post Production":["Editor","Assistant Editor","VFX","Colorist"]
+};
+
+const DEFAULT_DATA = {
+  meta:{
+    title:"PRODUCTION TITLE",
+    password:"blackline2026",
+    ownerPassword:"tophvision2026",
+    currentDay:1,
+    totalDays:18,
+    resetVersion:1,
+    deptHeadsCanUrgent:false
+  },
+  banner:{text:"",pinned:false},
+  todaysShoot:{
+    day:1,date:"",crewCall:"",castCalls:"",location:"",parking:"",scenes:"",
+    pageCount:"",wrap:"",weather:"",notes:"",safety:"",deptNotes:""
+  },
+  schedule:{
+    uploadedLabel:"",
+    fileName:"",
+    fileData:"", // base64 for uploaded file
+    fileType:"",
+    uploadedBy:"",
+    version:1,
+    days:[] // ShootDay objects, see below
+    /* ShootDay: {id,day,date,status,crewCall,castCalls,location,parking,scenes,
+       pageCount,wrap,deptNotes,safety,meal,attachments:[{id,name,fileData,fileType}],
+       callSheet:{fileData,fileName}, sides:{fileData,fileName}} */
+  },
+  documents:[], // {id,name,category,date,fileData,fileType,visibility:{type:'everyone'|'producers'|'department'|'cast'|'owner',value:string|null},uploadedBy}
+  announcements:[], // {id,text,author,date,pinned}
+  messages:[], // {id,author,authorId,dept,text,date,pinned,channel}
+  departments:[], // {id,name,head,contact,members,notes,responsibilities}
+  crew:[], // {id,name,role,department,phone,email,emergency,notes,callTime}
+  checklist:[
+    {id:1,label:"Call sheet uploaded",checked:false},
+    {id:2,label:"Sides uploaded",checked:false},
+    {id:3,label:"Location confirmed",checked:false},
+    {id:4,label:"Parking confirmed",checked:false},
+    {id:5,label:"Cast confirmed",checked:false},
+    {id:6,label:"Crew confirmed",checked:false},
+    {id:7,label:"Equipment confirmed",checked:false},
+    {id:8,label:"Lunch confirmed",checked:false},
+    {id:9,label:"Safety briefing completed",checked:false},
+    {id:10,label:"Wrap report uploaded",checked:false},
+  ],
+  // ---- New systems ----
+  users:[], // {id,firstName,lastName,email,phone,department,position,joinedAt,role}
+  notifications:[], // {id,text,date,author,authorId,urgent,target:{type:'all'|'department'|'user',value:string|null}, reads:{userId:timestamp}}
+  myScenes:[], // {id,sceneNumbers,shootDate,callTime,status}
+  scriptVersions:[], // {id,version,revisionDate,uploadedBy,note,fileData,fileName}
+  characterNotes:[], // {id,title,type,content,fileData,fileName}
+  deptDashboards:{} // {deptName:{notes:string, items:[{id,label,value}]}}
+};
+
+const DOC_VISIBILITY_OPTIONS = [
+  {value:'everyone',label:'Everyone'},
+  {value:'producers',label:'Producers Only'},
+  {value:'department',label:'Specific Department'},
+  {value:'cast',label:'Cast Only'},
+  {value:'owner',label:'Owner Only'}
+];
+
+const MESSAGE_CHANNELS = ["General","Announcements","Urgent Updates"]; // plus one per department, added dynamically
+
+/* ============ PERMISSION SYSTEM ============
+   Roles: 'owner' | 'producer' | 'depthead' | 'cast' | 'crew'
+   All permission checks MUST go through can() — UI hiding alone is not enforcement.
+*/
+function can(currentUser, action, ctx={}){
+  if(!currentUser) return false;
+  const role = currentUser.role;
+
+  switch(action){
+    // ---- Admin / system ----
+    case 'access_admin':
+    case 'change_owner_password':
+    case 'change_production_password':
+    case 'reset_production':
+    case 'manage_user_roles':
+    case 'remove_owner':
+    case 'global_settings':
+      return role === 'owner';
+
+    // ---- Schedule / shoot days ----
+    case 'edit_shoot_days':
+    case 'upload_schedule':
+    case 'delete_schedule':
+      return role === 'owner' || role === 'producer';
+
+    case 'add_dept_note_to_shoot_day':
+      return role === 'owner' || role === 'producer' ||
+        (role === 'depthead' && ctx.department === currentUser.department);
+
+    // ---- Documents ----
+    case 'upload_production_document':
+      return role === 'owner' || role === 'producer';
+    case 'upload_department_document':
+      return role === 'owner' || role === 'producer' ||
+        (role === 'depthead' && ctx.department === currentUser.department);
+    case 'delete_document':
+      return role === 'owner' || role === 'producer';
+    case 'view_document':
+      if(!ctx.visibility) return true;
+      switch(ctx.visibility.type){
+        case 'everyone': return true;
+        case 'producers': return role === 'owner' || role === 'producer';
+        case 'department': return role === 'owner' || role === 'producer' || currentUser.department === ctx.visibility.value;
+        case 'cast': return role === 'owner' || role === 'producer' || currentUser.department === 'Cast';
+        case 'owner': return role === 'owner';
+        default: return true;
+      }
+
+    // ---- Announcements ----
+    case 'post_announcement':
+      return role === 'owner' || role === 'producer';
+
+    // ---- Message wall ----
+    case 'delete_any_message':
+      return role === 'owner';
+    case 'pin_production_message':
+      return role === 'owner' || role === 'producer';
+    case 'pin_department_message':
+      return role === 'owner' || role === 'producer' || role === 'depthead';
+    case 'delete_own_message':
+      return true; // anyone can delete their own post
+
+    // ---- Notifications ----
+    case 'send_notification_all':
+    case 'send_notification_to_role':
+      return role === 'owner' || role === 'producer';
+    case 'send_urgent_alert':
+      if(role === 'owner' || role === 'producer') return true;
+      if(role === 'depthead') return !!ctx.deptHeadsCanUrgent;
+      return false;
+    case 'send_notification_role_group':
+      return role === 'owner' || role === 'producer';
+    case 'send_notification_to_department':
+      return role === 'owner' || role === 'producer' ||
+        (role === 'depthead' && ctx.department === currentUser.department);
+    case 'send_notification_to_user':
+      if(role === 'owner' || role === 'producer') return true;
+      if(role === 'depthead') return ctx.targetUserDepartment === currentUser.department;
+      return false;
+
+    default:
+      return false;
+  }
+}
+
+function roleLabel(role){
+  switch(role){
+    case 'owner': return 'Owner';
+    case 'producer': return 'Producer / Head of Production';
+    case 'depthead': return 'Department Head';
+    case 'cast': return 'Cast / Actor';
+    case 'crew': return 'Crew / Team Member';
+    default: return 'Unknown';
+  }
+}
+
+// Compute a user's role from their profile + department/head assignments
+function computeRole(user, data){
+  if(!user) return 'crew';
+  if(user.isOwner) return 'owner';
+  if(user.roleOverride) return user.roleOverride; // Owner can manually assign roles
+  // Self-selecting "Producers" during onboarding does NOT automatically grant
+  // production-management permissions — the Owner must confirm via Users & Roles.
+  if(user.department === 'Producers') return 'crew';
+  const isHead = data.departments.some(dp=>dp.head === `${user.firstName} ${user.lastName}`);
+  if(isHead) return 'depthead';
+  if(user.department === 'Cast') return 'cast';
+  return 'crew';
+}
+
+const STORAGE_KEY = "tophvision-portal-data";
+const USER_KEY = "tophvision-portal-user";
+const ADMIN_KEY = "tophvision-portal-admin-unlocked";
+// Permanent recovery key, independent of stored data. If the saved owner
+// password is lost, forgotten, or corrupted, this always works and resets
+// the owner password back to the default ("tophvision2026") on use.
+const MASTER_RECOVERY_KEY = "tophvision-master-reset-9981";
+
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function fmtDate(d){
+  if(!d) return "—";
+  try{
+    const dt = new Date(d+"T00:00:00");
+    return dt.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+  }catch(e){return d;}
+}
+function today(){
+  return new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+}
+
+// Determine if a notification targets a given user
+function notifTargets(notif, user, data){
+  if(!notif.target || notif.target.type==='all') return true;
+  if(notif.target.type==='department') return user && user.department===notif.target.value;
+  if(notif.target.type==='user') return user && user.id===notif.target.value;
+  if(notif.target.type==='role'){
+    if(!user) return false;
+    const r = data ? computeRole(user,data) : user.role;
+    if(notif.target.value==='producers') return r==='producer';
+    if(notif.target.value==='depthead') return r==='depthead';
+    if(notif.target.value==='cast') return user.department==='Cast';
+    if(notif.target.value==='crew') return r==='crew';
+    return false;
+  }
+  return false;
+}
+
+function App(){
+  const [data,setData] = useState(null);
+  const [loading,setLoading] = useState(true);
+  const [authed,setAuthed] = useState(false);
+  const [pwInput,setPwInput] = useState("");
+  const [loginError,setLoginError] = useState("");
+  const [tab,setTab] = useState("home");
+  const [saveTick,setSaveTick] = useState(0);
+  const [currentUser,setCurrentUser] = useState(null); // local profile
+  const [needsOnboard,setNeedsOnboard] = useState(false);
+  const [dismissedAlerts,setDismissedAlerts] = useState([]);
+  const [adminUnlocked,setAdminUnlocked] = useState(false); // legacy, retained for storage cleanup only
+  const [ownerMode,setOwnerMode] = useState(false);
+  const [loginLoading,setLoginLoading] = useState(false);
+  const [showRecoveryNotice,setShowRecoveryNotice] = useState(false);
+
+  useEffect(()=>{
+    (async()=>{
+      try{
+        const res = await window.storage.get(STORAGE_KEY, true);
+        if(res && res.value){
+          const parsed = JSON.parse(res.value);
+          // merge with defaults for safety on older saved data
+          setData({...JSON.parse(JSON.stringify(DEFAULT_DATA)), ...parsed,
+            meta: {...DEFAULT_DATA.meta, ...(parsed.meta||{})},
+            users: parsed.users||[],
+            notifications: parsed.notifications||[],
+            myScenes: parsed.myScenes||[],
+            scriptVersions: parsed.scriptVersions||[],
+            characterNotes: parsed.characterNotes||[],
+            deptDashboards: parsed.deptDashboards||{}
+          });
+        }else{
+          setData(JSON.parse(JSON.stringify(DEFAULT_DATA)));
+        }
+      }catch(e){
+        setData(JSON.parse(JSON.stringify(DEFAULT_DATA)));
+      }
+      // local user profile (per-device, not shared)
+      try{
+        const localUser = localStorage && localStorage.getItem ? null : null; // placeholder, real storage below
+      }catch(e){}
+      setLoading(false);
+    })();
+  },[]);
+
+  // load local user profile + admin unlock state
+  useEffect(()=>{
+    (async()=>{
+      try{
+        const res = await window.storage.get(USER_KEY, false);
+        if(res && res.value){
+          setCurrentUser(JSON.parse(res.value));
+        }
+      }catch(e){}
+      try{
+        const res2 = await window.storage.get(ADMIN_KEY, false);
+        if(res2 && res2.value === "true"){
+          setAdminUnlocked(true);
+        }
+      }catch(e){}
+    })();
+  },[]);
+
+  // persist shared data on change (debounced-ish via tick)
+  useEffect(()=>{
+    if(!data || loading) return;
+    const t = setTimeout(()=>{
+      window.storage.set(STORAGE_KEY, JSON.stringify(data), true).catch(()=>{});
+    }, 400);
+    return ()=>clearTimeout(t);
+  },[data,saveTick]);
+
+  function update(fn){
+    setData(prev=>{
+      const next = JSON.parse(JSON.stringify(prev));
+      fn(next);
+      return next;
+    });
+  }
+
+  async function tryLogin(){
+    if(loginLoading) return;
+    if(!data){
+      setLoginError("System is still loading. Please wait a moment and try again.");
+      return;
+    }
+    if(!pwInput.trim()){
+      setLoginError(ownerMode ? "Please enter the owner password." : "Please enter the production password.");
+      return;
+    }
+
+    setLoginLoading(true);
+    setLoginError("");
+
+    try{
+      if(ownerMode){
+        const isRecovery = pwInput === MASTER_RECOVERY_KEY;
+        const isOwnerPw = data && data.meta && pwInput === data.meta.ownerPassword;
+        if(isOwnerPw || isRecovery){
+          const ownerRecord = (currentUser && currentUser.isOwner) ? currentUser : {
+            firstName:"Topher", lastName:"Hall", email:"toph@tophvision.com", phone:"",
+            department:"Owner", position:"Founder / CEO",
+            isOwner:true, role:'owner',
+            id: (currentUser && currentUser.id) || uid(), joinedAt:new Date().toISOString()
+          };
+          // Set state first — never let storage errors block login
+          setCurrentUser(ownerRecord);
+          setAuthed(true);
+          setNeedsOnboard(false);
+          setLoginError("");
+          if(isRecovery){
+            setShowRecoveryNotice(true);
+            // Reset password in data and persist — non-blocking, errors are swallowed
+            update(d=>{
+              if(!d.users.some(u=>u.id===ownerRecord.id)) d.users.push(ownerRecord);
+              d.meta.ownerPassword = "tophvision2026";
+            });
+          } else {
+            update(d=>{
+              if(!d.users.some(u=>u.id===ownerRecord.id)) d.users.push(ownerRecord);
+            });
+          }
+          // Persist user profile — non-blocking
+          try{
+            if(window.storage && typeof window.storage.set === 'function'){
+              window.storage.set(USER_KEY, JSON.stringify(ownerRecord), false);
+            }
+          }catch(e){ /* non-fatal */ }
+        }else{
+          setLoginError("Incorrect owner password.");
+        }
+      }else{
+        if(data && data.meta && pwInput === data.meta.password){
+          setAuthed(true);
+          setLoginError("");
+          if(!currentUser){
+            setNeedsOnboard(true);
+          }
+        }else{
+          setLoginError("Incorrect production password.");
+        }
+      }
+    }catch(err){
+      // Show the actual error for debugging
+      setLoginError("Error: " + (err && err.message ? err.message : String(err)));
+    }finally{
+      setLoginLoading(false);
+    }
+  }
+
+  function completeOnboard(profile){
+    const userRecord = {...profile, id: uid(), joinedAt:new Date().toISOString()};
+    setCurrentUser(userRecord);
+    window.storage.set(USER_KEY, JSON.stringify(userRecord), false).catch(()=>{});
+    update(d=>{
+      d.users.push(userRecord);
+    });
+    setNeedsOnboard(false);
+  }
+
+  function markNotifRead(notifId){
+    if(!currentUser) return;
+    update(d=>{
+      const n = d.notifications.find(x=>x.id===notifId);
+      if(n){
+        if(!n.reads) n.reads = {};
+        if(!n.reads[currentUser.id]) n.reads[currentUser.id] = new Date().toISOString();
+      }
+    });
+  }
+
+  function switchProfile(){
+    if(!confirm("Switch profile? You'll be asked to join the production team again on this device.")) return;
+    setCurrentUser(null);
+    window.storage.delete(USER_KEY, false).catch(()=>{});
+    window.storage.delete(ADMIN_KEY, false).catch(()=>{});
+    setNeedsOnboard(true);
+    setAdminUnlocked(false);
+  }
+
+  if(loading || !data){
+    return <div className="loading-msg">LOADING PRODUCTION PORTAL...</div>;
+  }
+
+  if(!authed){
+    return (
+      <div className="login-screen">
+        <div className="login-grid"></div>
+        <div className="login-box">
+          <div className="brand-mark">TophVision Studios</div>
+          <div className="brand-name">PRODUCTION PORTAL</div>
+          <div className="brand-sub">{ownerMode ? 'Owner Access — TophVision Studios' : 'Private Access — Cast & Crew Only'}</div>
+          {ownerMode && (
+            <div style={{textAlign:'center',marginBottom:'12px'}}>
+              <span className="pill" style={{borderColor:'var(--amber)',color:'var(--amber)'}}>OWNER MODE</span>
+            </div>
+          )}
+
+          {showRecoveryNotice && (
+            <div style={{background:'#1c2e1c',border:'1px solid var(--green)',borderRadius:'2px',padding:'14px',marginBottom:'14px'}}>
+              <div style={{fontFamily:'var(--mono)',fontSize:'11px',color:'var(--green)',letterSpacing:'2px',textTransform:'uppercase',marginBottom:'6px'}}>Recovery Successful</div>
+              <div style={{fontSize:'13px',lineHeight:'1.5'}}>Owner password reset to: <strong style={{fontFamily:'var(--mono)'}}>tophvision2026</strong></div>
+              <div style={{fontSize:'12px',color:'var(--gray)',marginTop:'6px'}}>Go to Owner Admin → General → Owner Password to set a new one.</div>
+            </div>
+          )}
+
+          <div className="login-card">
+            <label className="login-label">{ownerMode ? 'Enter Owner Password' : 'Enter Production Password'}</label>
+            <input
+              type="password"
+              className="login-input"
+              value={pwInput}
+              onChange={e=>{setPwInput(e.target.value);setLoginError("");}}
+              onKeyDown={e=>{if(e.key==='Enter') tryLogin();}}
+              placeholder="••••••••••"
+              autoFocus
+            />
+            <button
+              className="login-btn"
+              disabled={loginLoading}
+              onClick={tryLogin}
+              style={loginLoading?{opacity:0.6,cursor:'default'}:{}}
+            >
+              {loginLoading ? 'Checking...' : (ownerMode ? 'Enter as Owner' : 'Enter Production')}
+            </button>
+            {loginError && (
+              <div className="login-error" style={{marginTop:'12px',fontSize:'13px',lineHeight:'1.4'}}>
+                {loginError}
+              </div>
+            )}
+          </div>
+
+          <div
+            className="login-footer"
+            style={{marginTop:'18px',cursor:'pointer',textDecoration:'underline',letterSpacing:'1px'}}
+            onClick={()=>{setOwnerMode(!ownerMode);setLoginError("");setPwInput("");setShowRecoveryNotice(false);}}
+          >
+            {ownerMode ? '← Back to Production Login' : 'Owner Access'}
+          </div>
+          <div className="login-footer">TOPHVISION STUDIOS // SECURE PRODUCTION SYSTEM</div>
+        </div>
+      </div>
+    );
+  }
+
+  if(needsOnboard || !currentUser){
+    return <Onboarding onComplete={completeOnboard} title={data.meta.title}/>;
+  }
+
+  const role = computeRole(currentUser, data);
+  // Keep currentUser.role in sync with computed role for permission checks (e.g. depthead via assignment)
+  const effectiveUser = {...currentUser, role};
+
+  // Active urgent alerts targeted at this user, not yet dismissed, not yet read
+  const urgentAlerts = data.notifications.filter(n=>
+    n.urgent && notifTargets(n,currentUser,data) &&
+    !dismissedAlerts.includes(n.id) &&
+    !(n.reads && n.reads[currentUser.id])
+  );
+
+  return (
+    <div className="app">
+      {urgentAlerts.length>0 && (
+        <UrgentAlert
+          alert={urgentAlerts[0]}
+          onDismiss={()=>{
+            markNotifRead(urgentAlerts[0].id);
+            setDismissedAlerts(prev=>[...prev,urgentAlerts[0].id]);
+          }}
+        />
+      )}
+      <Header data={data} currentUser={effectiveUser} role={role} setAuthed={setAuthed} setPwInput={setPwInput} switchProfile={switchProfile}/>
+      <Nav tab={tab} setTab={setTab} role={role} currentUser={effectiveUser} data={data}/>
+      <div className="main">
+        {tab==='home' && <Home data={data} currentUser={effectiveUser} role={role} setTab={setTab} markNotifRead={markNotifRead}/>}
+        {tab==='dashboard' && <Dashboard data={data} setTab={setTab} role={role} currentUser={effectiveUser} update={update}/>}
+        {tab==='today' && <TodaysShoot data={data} update={update} role={role} currentUser={effectiveUser}/>}
+        {tab==='schedule' && <Schedule data={data} update={update} role={role} currentUser={effectiveUser}/>}
+        {tab==='documents' && <Documents data={data} update={update} role={role} currentUser={effectiveUser}/>}
+        {tab==='announcements' && <Announcements data={data} update={update} role={role} currentUser={effectiveUser}/>}
+        {tab==='wall' && <MessageWall data={data} update={update} role={role} currentUser={effectiveUser}/>}
+        {tab==='departments' && <Departments data={data} update={update} role={role} currentUser={effectiveUser}/>}
+        {tab==='crew' && <CrewDirectory data={data} update={update} role={role} currentUser={effectiveUser}/>}
+        {tab==='notifications' && <NotificationCenter data={data} currentUser={effectiveUser} role={role} update={update} markNotifRead={markNotifRead}/>}
+        {tab==='cast' && <CastDashboard data={data} currentUser={effectiveUser} update={update} role={role}/>}
+        {tab==='deptdash' && <DeptDashboard data={data} currentUser={effectiveUser} update={update} role={role}/>}
+        {tab==='producer' && (role==='owner'||role==='producer') && <ProducerDashboard data={data} currentUser={effectiveUser} role={role}/>}
+        {tab==='admin' && (
+          role==='owner'
+            ? <Admin data={data} update={update} setAuthed={setAuthed} currentUser={effectiveUser}/>
+            : <AccessDenied/>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ============ ONBOARDING ============ */
+function Onboarding({onComplete,title}){
+  const [firstName,setFirstName] = useState("");
+  const [lastName,setLastName] = useState("");
+  const [email,setEmail] = useState("");
+  const [phone,setPhone] = useState("");
+  const [department,setDepartment] = useState("");
+  const [position,setPosition] = useState("");
+  const [error,setError] = useState("");
+
+  const positions = department ? (DEPARTMENT_TREE[department]||[]) : [];
+
+  function submit(){
+    if(!firstName.trim()||!lastName.trim()||!email.trim()||!phone.trim()||!department||!position){
+      setError("Please complete all fields before continuing.");
+      return;
+    }
+    onComplete({firstName,lastName,email,phone,department,position});
+  }
+
+  return (
+    <div className="onboard-screen">
+      <div className="login-grid"></div>
+      <div className="onboard-box">
+        <div className="brand-mark">TophVision Studios</div>
+        <div className="brand-name">JOIN YOUR PRODUCTION TEAM</div>
+        <div className="brand-sub">{title}</div>
+        <div className="login-card" style={{marginTop:'24px'}}>
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-label">First Name</label>
+              <input className="form-input" value={firstName} onChange={e=>setFirstName(e.target.value)}/>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Last Name</label>
+              <input className="form-input" value={lastName} onChange={e=>setLastName(e.target.value)}/>
+            </div>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Email</label>
+            <input className="form-input" type="email" value={email} onChange={e=>setEmail(e.target.value)}/>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Phone Number</label>
+            <input className="form-input" type="tel" value={phone} onChange={e=>setPhone(e.target.value)}/>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Department</label>
+            <select className="form-select" value={department} onChange={e=>{setDepartment(e.target.value);setPosition("");}}>
+              <option value="">Select department...</option>
+              {Object.keys(DEPARTMENT_TREE).map(dep=><option key={dep} value={dep}>{dep}</option>)}
+            </select>
+          </div>
+          {department && (
+            <div className="form-group">
+              <label className="form-label">Position / Role</label>
+              <select className="form-select" value={position} onChange={e=>setPosition(e.target.value)}>
+                <option value="">Select position...</option>
+                {positions.map(p=><option key={p} value={p}>{p}</option>)}
+              </select>
+            </div>
+          )}
+          <button className="login-btn" onClick={submit}>Join Production</button>
+          {error && <div className="login-error">{error}</div>}
+        </div>
+        <div className="login-footer">YOU'LL ONLY SEE THIS ONCE PER DEVICE</div>
+      </div>
+    </div>
+  );
+}
+
+/* ============ URGENT ALERT ============ */
+function UrgentAlert({alert,onDismiss}){
+  return (
+    <div className="urgent-overlay">
+      <div className="urgent-box">
+        <div className="urgent-label">⚠ Urgent Alert</div>
+        <div className="urgent-text">{alert.text}</div>
+        <div className="msg-meta" style={{marginBottom:'14px'}}>{alert.author} · {alert.date}</div>
+        <button className="btn" style={{width:'100%'}} onClick={onDismiss}>Acknowledge</button>
+      </div>
+    </div>
+  );
+}
+
+/* ============ ACCESS DENIED ROUTE GUARD ============ */
+function AccessDenied(){
+  return (
+    <div>
+      <div className="section-title">Restricted Area</div>
+      <div className="card" style={{borderColor:'var(--red)',textAlign:'center',padding:'40px 20px'}}>
+        <div style={{fontSize:'15px',fontWeight:700,letterSpacing:'1px',color:'var(--red)',marginBottom:'10px'}}>
+          Access denied. Owner only.
+        </div>
+        <div style={{fontSize:'13px',color:'var(--gray)'}}>
+          This area is restricted to the Owner of TophVision Studios. If you believe you should have access, contact production leadership.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Header({data,currentUser,role,setAuthed,setPwInput,switchProfile}){
+  const banner = data.banner;
+  const tagLine = currentUser && currentUser.isOwner
+    ? `${currentUser.firstName} ${currentUser.lastName} · Owner · TophVision Studios`
+    : (currentUser ? `${currentUser.firstName} ${currentUser.lastName} · ${currentUser.department} · ${roleLabel(role)}` : roleLabel(role));
+  return (
+    <div className="header">
+      <div className="header-top">
+        <div>
+          <div className="header-title">{data.meta.title}</div>
+          <div className="header-tag">{tagLine}</div>
+        </div>
+        <div style={{display:'flex',gap:'8px'}}>
+          {!(currentUser && currentUser.isOwner) && <button className="logout-btn" onClick={switchProfile}>Switch User</button>}
+          <button className="logout-btn" onClick={()=>{setAuthed(false);setPwInput("");}}>Log Out</button>
+        </div>
+      </div>
+      <div className="header-meta">
+        <div className="meta-item">SHOOT DAY <b>{String(data.meta.currentDay).padStart(2,'0')}</b> OF <b>{String(data.meta.totalDays).padStart(2,'0')}</b></div>
+        <div className="meta-item">TODAY: <b>{today()}</b></div>
+        {data.todaysShoot.crewCall && <div className="meta-item">CALL: <b>{data.todaysShoot.crewCall}</b></div>}
+        {data.todaysShoot.location && <div className="meta-item">LOC: <b>{data.todaysShoot.location}</b></div>}
+      </div>
+      {banner.text && (
+        <div className="banner">
+          {banner.pinned && <span className="banner-pin">📌 PINNED</span>}
+          <span>{banner.text}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Nav({tab,setTab,role,currentUser,data}){
+  const unread = currentUser ? data.notifications.filter(n=>notifTargets(n,currentUser,data) && !(n.reads && n.reads[currentUser.id])).length : 0;
+
+  const items = [
+    {id:'home',label:'Home'},
+    {id:'dashboard',label:'Dashboard'},
+    {id:'today',label:"Today's Shoot"},
+    {id:'schedule',label:'Schedule'},
+    {id:'documents',label:'Documents'},
+    {id:'announcements',label:'Announcements'},
+    {id:'wall',label:'Message Wall'},
+    {id:'notifications',label:'Notifications',badge:unread},
+    {id:'departments',label:'Departments'},
+    {id:'crew',label:'Cast & Crew'},
+  ];
+  if(currentUser && currentUser.department==='Cast') items.splice(8,0,{id:'cast',label:'Cast Dashboard'});
+  if(currentUser && currentUser.department && currentUser.department!=='Cast' && currentUser.department!=='Producers' && currentUser.department!=='Owner') items.splice(8,0,{id:'deptdash',label:currentUser.department+' Dashboard'});
+  if(role==='owner' || role==='producer') items.splice(8,0,{id:'producer',label:'Producer Dashboard'});
+  if(role==='owner') items.push({id:'admin',label:'Owner Admin'});
+
+  return (
+    <div className="nav">
+      {items.map(it=>(
+        <div key={it.id} className={"nav-item"+(tab===it.id?' active':'')} onClick={()=>setTab(it.id)}>
+          {it.label}{it.badge>0 && <span className="notif-badge">{it.badge}</span>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ============ HOME (Personalized) ============ */
+function Home({data,currentUser,role,setTab,markNotifRead}){
+  const unreadNotifs = data.notifications.filter(n=>notifTargets(n,currentUser,data) && !(n.reads && n.reads[currentUser.id]));
+  const newDocs = data.documents.filter(d=>can(currentUser,'view_document',{visibility:d.visibility})).length;
+  const myScenesCount = data.myScenes.filter(s=>s.status!=='completed').length;
+  const ts = data.todaysShoot;
+
+  return (
+    <div>
+      <div className="welcome-card">
+        <div className="welcome-name">Welcome, {currentUser.firstName} {currentUser.lastName}</div>
+        <div className="welcome-meta">Department: {currentUser.department}</div>
+        <div className="welcome-meta">Role: {roleLabel(role)}</div>
+        <div className="welcome-meta">Today's Call Time: {ts.crewCall || '—'}</div>
+        <div className="welcome-meta">Current Shoot Day: Day {data.meta.currentDay} of {data.meta.totalDays}</div>
+        <div className="stat-row">
+          <div className="stat-box" onClick={()=>setTab('notifications')}>
+            <div className="stat-num">{unreadNotifs.length}</div>
+            <div className="stat-label">Unread Messages</div>
+          </div>
+          <div className="stat-box" onClick={()=>setTab('documents')}>
+            <div className="stat-num">{newDocs}</div>
+            <div className="stat-label">Documents</div>
+          </div>
+          {currentUser.department==='Cast' && (
+            <div className="stat-box" onClick={()=>setTab('cast')}>
+              <div className="stat-num">{myScenesCount}</div>
+              <div className="stat-label">Upcoming Scenes</div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="section-title">Today's Shoot at a Glance</div>
+      <div className="card">
+        <Row label="Shoot Day" value={`Day ${ts.day||data.meta.currentDay} — ${fmtDate(ts.date)}`}/>
+        <Row label="Crew Call" value={ts.crewCall}/>
+        <Row label="Location" value={ts.location}/>
+        <Row label="Scenes" value={ts.scenes}/>
+        <div className="btn-row"><button className="btn-secondary btn-sm" onClick={()=>setTab('today')}>Full Details →</button></div>
+      </div>
+
+      {unreadNotifs.length>0 && (
+        <>
+          <div className="section-title">Unread Messages</div>
+          {unreadNotifs.slice(0,3).map(n=>(
+            <div key={n.id} className={"notif-card unread"+(n.urgent?' urgent':'')}>
+              <div className="notif-target">{n.target.type==='all'?'To: Everyone':n.target.type==='department'?'To: '+n.target.value:'Direct Message'}</div>
+              <div className="msg-head"><span className="msg-author">{n.author}</span><span className="msg-meta">{n.date}</span></div>
+              <div className="msg-body">{n.text}</div>
+              <div className="btn-row"><button className="btn-secondary btn-sm" onClick={()=>markNotifRead(n.id)}>Mark as Read</button></div>
+            </div>
+          ))}
+          <div className="btn-row"><button className="btn-secondary btn-sm" onClick={()=>setTab('notifications')}>View All →</button></div>
+        </>
+      )}
+
+      <div className="section-title">Quick Links</div>
+      <div className="card" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'10px',padding:'14px'}}>
+        <QuickLink label="Full Schedule" onClick={()=>setTab('schedule')}/>
+        <QuickLink label="Documents" onClick={()=>setTab('documents')}/>
+        <QuickLink label="Message Wall" onClick={()=>setTab('wall')}/>
+        <QuickLink label="Departments" onClick={()=>setTab('departments')}/>
+        {currentUser.department==='Cast' && <QuickLink label="Cast Dashboard" onClick={()=>setTab('cast')}/>}
+        {currentUser.department!=='Cast' && currentUser.department!=='Producers' && currentUser.department!=='Owner' && <QuickLink label={currentUser.department+" Dashboard"} onClick={()=>setTab('deptdash')}/>}
+        {(role==='owner'||role==='producer') && <QuickLink label="Producer Dashboard" onClick={()=>setTab('producer')}/>}
+        {role==='owner' && <QuickLink label="Owner Admin Panel" onClick={()=>setTab('admin')}/>}
+      </div>
+    </div>
+  );
+}
+
+/* ============ DASHBOARD ============ */
+function Dashboard({data,setTab,role,update}){
+  const ts = data.todaysShoot;
+  const pinnedAnn = data.announcements.filter(a=>a.pinned).slice(0,2);
+  const recentAnn = data.announcements.filter(a=>!a.pinned).slice(0,2);
+  const checklistDone = data.checklist.filter(c=>c.checked).length;
+
+  return (
+    <div>
+      <div className="section-title">Production Status</div>
+      <div className="card">
+        <div className="big-stat">
+          <div>
+            <div className="num">{String(data.meta.currentDay).padStart(2,'0')}/{String(data.meta.totalDays).padStart(2,'0')}</div>
+            <div className="sub">Shoot Day</div>
+          </div>
+          <div style={{textAlign:'right'}}>
+            <div className="num" style={{fontSize:'20px',color:'var(--amber)'}}>{ts.crewCall || '—'}</div>
+            <div className="sub">Crew Call</div>
+          </div>
+        </div>
+        <div className="card-row"><span className="label">Location</span><span className="value">{ts.location || '—'}</span></div>
+        <div className="card-row"><span className="label">Scenes</span><span className="value">{ts.scenes || '—'}</span></div>
+        <div className="card-row"><span className="label">Page Count</span><span className="value">{ts.pageCount || '—'}</span></div>
+        <div className="card-row"><span className="label">Est. Wrap</span><span className="value">{ts.wrap || '—'}</span></div>
+        <div className="btn-row">
+          <button className="btn-secondary btn-sm" onClick={()=>setTab('today')}>Full Details →</button>
+        </div>
+      </div>
+
+      {(pinnedAnn.length>0 || recentAnn.length>0) && (
+        <>
+          <div className="section-title">Announcements</div>
+          {pinnedAnn.map(a=>(
+            <div key={a.id} className="msg-card pinned">
+              <div className="msg-head"><span className="msg-author">📌 {a.author}</span><span className="msg-meta">{a.date}</span></div>
+              <div className="msg-body">{a.text}</div>
+            </div>
+          ))}
+          {recentAnn.map(a=>(
+            <div key={a.id} className="msg-card">
+              <div className="msg-head"><span className="msg-author">{a.author}</span><span className="msg-meta">{a.date}</span></div>
+              <div className="msg-body">{a.text}</div>
+            </div>
+          ))}
+          <div className="btn-row">
+            <button className="btn-secondary btn-sm" onClick={()=>setTab('announcements')}>View All →</button>
+          </div>
+        </>
+      )}
+
+      <div className="section-title">Quick Links</div>
+      <div className="card" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'10px',padding:'14px'}}>
+        <QuickLink label="Full Schedule" onClick={()=>setTab('schedule')}/>
+        <QuickLink label="Documents" onClick={()=>setTab('documents')}/>
+        <QuickLink label="Message Wall" onClick={()=>setTab('wall')}/>
+        <QuickLink label="Departments" onClick={()=>setTab('departments')}/>
+        <QuickLink label="Cast & Crew" onClick={()=>setTab('crew')}/>
+        {role==='owner' && <QuickLink label="Owner Admin Panel" onClick={()=>setTab('admin')}/>}
+      </div>
+
+      {(role==='owner' || role==='producer') && (
+        <>
+          <div className="section-title">Daily Checklist ({checklistDone}/{data.checklist.length})</div>
+          <Checklist data={data} update={update} compact/>
+        </>
+      )}
+    </div>
+  );
+}
+
+function QuickLink({label,onClick}){
+  return (
+    <button className="btn-secondary" style={{width:'100%'}} onClick={onClick}>{label}</button>
+  );
+}
+
+/* ============ TODAY'S SHOOT ============ */
+function TodaysShoot({data,update,role,currentUser}){
+  const days = data.schedule.days || [];
+  const canEditDays = can(currentUser,'edit_shoot_days');
+  const [showAdd,setShowAdd] = useState(false);
+  const [edit,setEdit] = useState(null);
+  const [expandedId,setExpandedId] = useState(null);
+
+  const blankDay = {
+    day:'', date:'', status:'upcoming', crewCall:'', castCalls:'', location:'',
+    parking:'', scenes:'', pageCount:'', wrap:'', deptNotes:'', safety:'', meal:'',
+    attachments:[], callSheet:null, sides:null
+  };
+  const [form,setForm] = useState(blankDay);
+
+  function addDay(){
+    if(!form.day.toString().trim()) return;
+    update(d=>{ d.schedule.days.push({...form,id:uid()}); });
+    setForm(blankDay);
+    setShowAdd(false);
+  }
+  function saveDay(updatedDay){
+    if(!can(currentUser,'edit_shoot_days') && !can(currentUser,'add_dept_note_to_shoot_day',{department:currentUser.department})){
+      return; // backend-style block
+    }
+    update(d=>{
+      const idx = d.schedule.days.findIndex(x=>x.id===updatedDay.id);
+      if(idx===-1) return;
+      if(can(currentUser,'edit_shoot_days')){
+        d.schedule.days[idx] = updatedDay;
+      }else{
+        // Department heads can only update their own dept note field
+        d.schedule.days[idx].deptNotes = updatedDay.deptNotes;
+      }
+    });
+    setEdit(null);
+  }
+  function deleteDay(id){
+    if(!can(currentUser,'edit_shoot_days')) return;
+    if(!confirm("Delete this shoot day?")) return;
+    update(d=>{d.schedule.days = d.schedule.days.filter(x=>x.id!==id);});
+  }
+
+  const sortedDays = [...days].sort((a,b)=>(parseInt(a.day)||0)-(parseInt(b.day)||0));
+  const activeDay = sortedDays.find(d=>d.status==='shooting') || sortedDays.find(d=>parseInt(d.day)===data.meta.currentDay) || sortedDays[0];
+
+  return (
+    <div>
+      <div className="section-title">Today's Shoot</div>
+
+      {activeDay ? (
+        <ShootDayCard
+          day={activeDay}
+          highlight
+          currentUser={currentUser}
+          canEditDays={canEditDays}
+          onEdit={()=>setEdit(activeDay)}
+          onDelete={()=>deleteDay(activeDay.id)}
+          expanded
+        />
+      ) : (
+        <div className="empty-state">No shoot days have been entered yet.</div>
+      )}
+
+      {canEditDays && !showAdd && (
+        <div className="btn-row"><button className="btn" onClick={()=>setShowAdd(true)}>+ Add Shoot Day</button></div>
+      )}
+      {canEditDays && showAdd && (
+        <div className="card">
+          <ShootDayEditForm form={form} setForm={setForm} onSave={addDay} onCancel={()=>{setForm(blankDay);setShowAdd(false);}} addMode currentUser={currentUser} fullEdit/>
+        </div>
+      )}
+
+      <div className="section-title" style={{marginTop:'20px'}}>All Shoot Days</div>
+      {sortedDays.length===0 && <div className="empty-state">No shoot days entered yet.</div>}
+      {sortedDays.map(day=>{
+        const isEditingThis = edit && edit.id===day.id;
+        const canEditThis = canEditDays || can(currentUser,'add_dept_note_to_shoot_day',{department:currentUser.department});
+        return (
+          <div key={day.id}>
+            {isEditingThis ? (
+              <div className="card">
+                <ShootDayEditForm
+                  form={edit} setForm={setEdit}
+                  onSave={()=>saveDay(edit)} onCancel={()=>setEdit(null)}
+                  currentUser={currentUser}
+                  fullEdit={canEditDays}
+                />
+              </div>
+            ) : (
+              <ShootDayCard
+                day={day}
+                currentUser={currentUser}
+                canEditDays={canEditDays}
+                canEditThis={canEditThis}
+                onEdit={()=>setEdit(day)}
+                onDelete={()=>deleteDay(day.id)}
+                expanded={expandedId===day.id}
+                onToggle={()=>setExpandedId(expandedId===day.id?null:day.id)}
+              />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function ShootDayCard({day,currentUser,canEditDays,canEditThis,onEdit,onDelete,expanded,onToggle,highlight}){
+  const statusLabelMap = {upcoming:'Upcoming',shooting:'Today',completed:'Completed',changed:'Changed'};
+  return (
+    <div className={"list-item"+(highlight?'':'')} style={highlight?{borderColor:'var(--amber)'}:{}}>
+      <div className="list-item-head" style={onToggle?{cursor:'pointer'}:{}} onClick={onToggle}>
+        <div>
+          <div className="list-item-title">Shoot Day {String(day.day).padStart(2,'0')}{day.date?' — '+fmtDate(day.date):''}</div>
+          <div className="list-item-sub">{day.location||'Location TBD'}</div>
+        </div>
+        <span className={"status-tag status-"+(day.status||'upcoming')}>{statusLabelMap[day.status]||day.status}</span>
+      </div>
+
+      {(expanded || highlight) && (
+        <>
+          <div className="detail-grid">
+            <div><div className="label">General Crew Call</div><div className="value">{day.crewCall||'—'}</div></div>
+            <div><div className="label">Estimated Wrap</div><div className="value">{day.wrap||'—'}</div></div>
+            <div><div className="label">Scenes</div><div className="value">{day.scenes||'—'}</div></div>
+            <div><div className="label">Page Count</div><div className="value">{day.pageCount||'—'}</div></div>
+          </div>
+          {day.castCalls && <InfoBlock title="Cast Call Times" text={day.castCalls}/>}
+          {day.parking && <InfoBlock title="Parking Instructions" text={day.parking}/>}
+          {day.meal && <InfoBlock title="Meal Notes" text={day.meal}/>}
+          {day.deptNotes && <InfoBlock title="Department Notes" text={day.deptNotes}/>}
+          {day.safety && <InfoBlock title="Safety Notes" text={day.safety} danger/>}
+
+          {(day.callSheet || day.sides || (day.attachments && day.attachments.length>0)) && (
+            <div className="dash-tile">
+              <div className="dash-tile-title">Day Attachments</div>
+              {day.callSheet && (
+                <div className="version-row">
+                  <div className="version-tag">Call Sheet</div>
+                  <a className="btn-secondary btn-sm" href={day.callSheet.fileData} download={day.callSheet.fileName} style={{textDecoration:'none'}}>View</a>
+                </div>
+              )}
+              {day.sides && (
+                <div className="version-row">
+                  <div className="version-tag">Sides</div>
+                  <a className="btn-secondary btn-sm" href={day.sides.fileData} download={day.sides.fileName} style={{textDecoration:'none'}}>View</a>
+                </div>
+              )}
+              {(day.attachments||[]).map(att=>(
+                <div key={att.id} className="version-row">
+                  <div className="version-tag">{att.name}</div>
+                  <a className="btn-secondary btn-sm" href={att.fileData} download={att.name} style={{textDecoration:'none'}}>View</a>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+
+      {(canEditDays || canEditThis) && (
+        <div className="btn-row">
+          <button className="btn-secondary btn-sm" onClick={onEdit}>{canEditDays?'Edit':'Add Dept Notes'}</button>
+          {canEditDays && <button className="btn-danger btn-sm" onClick={onDelete}>Delete</button>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ShootDayEditForm({form,setForm,onSave,onCancel,addMode,currentUser,fullEdit}){
+  function handleFile(field,e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      setForm({...form,[field]:{fileData:reader.result,fileName:file.name}});
+    };
+    reader.readAsDataURL(file);
+  }
+  function handleAttachment(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      setForm({...form,attachments:[...(form.attachments||[]),{id:uid(),name:file.name,fileData:reader.result,fileType:file.type}]});
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  }
+  function removeAttachment(id){
+    setForm({...form,attachments:(form.attachments||[]).filter(a=>a.id!==id)});
+  }
+
+  if(!fullEdit){
+    // Department head: can only edit deptNotes
+    return (
+      <div>
+        <div className="dash-tile-title" style={{marginBottom:'10px'}}>Shoot Day {form.day} — Department Notes ({currentUser.department})</div>
+        <div className="form-group">
+          <label className="form-label">Notes for {currentUser.department}</label>
+          <textarea className="form-textarea" value={form.deptNotes} onChange={e=>setForm({...form,deptNotes:e.target.value})}/>
+        </div>
+        <div className="btn-row">
+          <button className="btn" onClick={onSave}>Save Notes</button>
+          <button className="btn-secondary" onClick={onCancel}>Cancel</button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="form-row">
+        <div className="form-group"><label className="form-label">Shoot Day #</label><input className="form-input" type="number" value={form.day} onChange={e=>setForm({...form,day:e.target.value})}/></div>
+        <div className="form-group"><label className="form-label">Date</label><input className="form-input" type="date" value={form.date} onChange={e=>setForm({...form,date:e.target.value})}/></div>
+      </div>
+      <div className="form-group">
+        <label className="form-label">Status</label>
+        <select className="form-select" value={form.status} onChange={e=>setForm({...form,status:e.target.value})}>
+          <option value="upcoming">Upcoming</option>
+          <option value="shooting">Today</option>
+          <option value="completed">Completed</option>
+          <option value="changed">Changed</option>
+        </select>
+      </div>
+      <div className="form-group"><label className="form-label">General Crew Call</label><input className="form-input" placeholder="e.g. 7:00 AM" value={form.crewCall} onChange={e=>setForm({...form,crewCall:e.target.value})}/></div>
+      <div className="form-group"><label className="form-label">Cast Call Times</label><textarea className="form-textarea" placeholder="Talent name — call time" value={form.castCalls} onChange={e=>setForm({...form,castCalls:e.target.value})}/></div>
+      <div className="form-group"><label className="form-label">Location</label><input className="form-input" value={form.location} onChange={e=>setForm({...form,location:e.target.value})}/></div>
+      <div className="form-group"><label className="form-label">Parking Instructions</label><textarea className="form-textarea" value={form.parking} onChange={e=>setForm({...form,parking:e.target.value})}/></div>
+      <div className="form-group"><label className="form-label">Scenes Shooting</label><input className="form-input" value={form.scenes} onChange={e=>setForm({...form,scenes:e.target.value})}/></div>
+      <div className="form-row">
+        <div className="form-group"><label className="form-label">Page Count</label><input className="form-input" value={form.pageCount} onChange={e=>setForm({...form,pageCount:e.target.value})}/></div>
+        <div className="form-group"><label className="form-label">Estimated Wrap</label><input className="form-input" value={form.wrap} onChange={e=>setForm({...form,wrap:e.target.value})}/></div>
+      </div>
+      <div className="form-group"><label className="form-label">Meal Notes</label><textarea className="form-textarea" placeholder="e.g. Lunch at 1pm, base camp" value={form.meal} onChange={e=>setForm({...form,meal:e.target.value})}/></div>
+      <div className="form-group"><label className="form-label">Department Notes</label><textarea className="form-textarea" value={form.deptNotes} onChange={e=>setForm({...form,deptNotes:e.target.value})}/></div>
+      <div className="form-group"><label className="form-label">Safety Notes</label><textarea className="form-textarea" value={form.safety} onChange={e=>setForm({...form,safety:e.target.value})}/></div>
+
+      <div className="form-group">
+        <label className="form-label">Call Sheet (this day)</label>
+        <input type="file" className="form-input" onChange={e=>handleFile('callSheet',e)}/>
+        {form.callSheet && <div className="version-meta" style={{marginTop:'4px'}}>Attached: {form.callSheet.fileName}</div>}
+      </div>
+      <div className="form-group">
+        <label className="form-label">Sides (this day)</label>
+        <input type="file" className="form-input" onChange={e=>handleFile('sides',e)}/>
+        {form.sides && <div className="version-meta" style={{marginTop:'4px'}}>Attached: {form.sides.fileName}</div>}
+      </div>
+      <div className="form-group">
+        <label className="form-label">Other Attachments</label>
+        <input type="file" className="form-input" onChange={handleAttachment}/>
+        {(form.attachments||[]).map(att=>(
+          <div key={att.id} className="version-row">
+            <div className="version-tag">{att.name}</div>
+            <button className="btn-danger btn-sm" onClick={()=>removeAttachment(att.id)}>Remove</button>
+          </div>
+        ))}
+      </div>
+
+      <div className="btn-row">
+        <button className="btn" onClick={onSave}>{addMode?'Add Shoot Day':'Save Changes'}</button>
+        <button className="btn-secondary" onClick={onCancel}>Cancel</button>
+      </div>
+    </div>
+  );
+}
+
+function Row({label,value}){
+  return <div className="card-row"><span className="label">{label}</span><span className="value">{value || '—'}</span></div>;
+}
+
+function InfoBlock({title,text,accent,danger}){
+  return (
+    <>
+      <div className="section-title">{title}</div>
+      <div className="card" style={{borderLeft:`3px solid ${danger?'var(--red)':accent?'var(--amber)':'var(--line)'}`}}>
+        <div style={{whiteSpace:'pre-wrap',fontSize:'14px',lineHeight:'1.6'}}>{text}</div>
+      </div>
+    </>
+  );
+}
+
+/* ============ SCHEDULE (Uploaded File) ============ */
+function Schedule({data,update,role,currentUser}){
+  const sched = data.schedule;
+  const canManage = can(currentUser,'upload_schedule');
+
+  function handleFile(e){
+    if(!canManage) return; // backend-style block
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      update(d=>{
+        d.schedule.fileData = reader.result;
+        d.schedule.fileName = file.name;
+        d.schedule.fileType = file.type;
+        d.schedule.uploadedLabel = new Date().toLocaleString();
+        d.schedule.uploadedBy = `${currentUser.firstName} ${currentUser.lastName}`;
+        d.schedule.version = (d.schedule.version||0)+1;
+      });
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  }
+
+  function removeSchedule(){
+    if(!can(currentUser,'delete_schedule')) return;
+    if(!confirm("Remove the uploaded schedule? This cannot be undone.")) return;
+    update(d=>{
+      d.schedule.fileData = "";
+      d.schedule.fileName = "";
+      d.schedule.fileType = "";
+      d.schedule.uploadedLabel = "";
+      d.schedule.uploadedBy = "";
+    });
+  }
+
+  return (
+    <div>
+      <div className="section-title">Full Shooting Schedule</div>
+
+      {sched.fileName ? (
+        <div className="card">
+          <div className="card-row"><span className="label">Latest Schedule Uploaded</span><span className="value">{sched.uploadedLabel}</span></div>
+          <div className="card-row"><span className="label">Uploaded By</span><span className="value">{sched.uploadedBy||'—'}</span></div>
+          <div className="card-row"><span className="label">Version</span><span className="value">v{sched.version||1}</span></div>
+          <div className="card-row"><span className="label">File</span><span className="value">{sched.fileName}</span></div>
+          <div className="btn-row">
+            <a className="btn-secondary btn-sm" href={sched.fileData} download={sched.fileName} style={{textDecoration:'none',display:'inline-block'}}>Download / View</a>
+            {canManage && <button className="btn-danger btn-sm" onClick={removeSchedule}>Remove</button>}
+          </div>
+        </div>
+      ) : (
+        <div className="empty-state">No schedule has been uploaded yet.</div>
+      )}
+
+      {canManage && (
+        <div className="card">
+          <label className="form-label">Upload / Replace Schedule (PDF, Excel, CSV, Image)</label>
+          <input type="file" className="form-input" accept=".pdf,.xls,.xlsx,.csv,image/*" onChange={handleFile}/>
+        </div>
+      )}
+
+      <div className="section-title" style={{marginTop:'20px'}}>Day-by-Day Shoot Status</div>
+      {(data.schedule.days||[]).length===0 && <div className="empty-state">No shoot days entered yet. See Today's Shoot to add them.</div>}
+      {[...(data.schedule.days||[])].sort((a,b)=>(parseInt(a.day)||0)-(parseInt(b.day)||0)).map(day=>{
+        const statusLabelMap = {upcoming:'Upcoming',shooting:'Today',completed:'Completed',changed:'Changed'};
+        return (
+          <div key={day.id} className="card-row">
+            <span className="value">Shoot Day {String(day.day).padStart(2,'0')}{day.date?' — '+fmtDate(day.date):''}</span>
+            <span className={"status-tag status-"+(day.status||'upcoming')}>{statusLabelMap[day.status]||day.status}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ============ DOCUMENTS ============ */
+const DOC_CATEGORIES = ["Call Sheets","Shooting Schedule","Cast List","Crew List","Location Info","Parking Maps","Safety Documents","Script Pages","Sides","NDAs / Releases","Production Memos","Vendor Info","Emergency Contacts"];
+
+function Documents({data,update,role,currentUser}){
+  const canUploadProduction = can(currentUser,'upload_production_document');
+  const canUploadDept = can(currentUser,'upload_department_document',{department:currentUser.department});
+  const canUpload = canUploadProduction || canUploadDept;
+  const canDelete = can(currentUser,'delete_document');
+
+  const [category,setCategory] = useState(DOC_CATEGORIES[0]);
+  const [filter,setFilter] = useState("All");
+  const [visType,setVisType] = useState(canUploadProduction ? 'everyone' : 'department');
+  const [visDept,setVisDept] = useState(currentUser.department);
+
+  function handleFile(e){
+    if(!canUpload) return; // backend-style block
+    const file = e.target.files[0];
+    if(!file) return;
+
+    let visibility = {type:'everyone',value:null};
+    if(canUploadProduction){
+      visibility = {type:visType, value: visType==='department' ? visDept : null};
+    }else if(canUploadDept){
+      // dept heads restricted to their own department visibility
+      visibility = {type:'department', value: currentUser.department};
+    }
+
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      update(d=>{
+        d.documents.unshift({
+          id:uid(),name:file.name,category,date:new Date().toLocaleDateString(),
+          fileData:reader.result,fileType:file.type,
+          visibility, uploadedBy:`${currentUser.firstName} ${currentUser.lastName}`
+        });
+      });
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  }
+
+  function deleteDoc(id){
+    if(!canDelete) return; // backend-style block
+    if(!confirm("Remove this document?")) return;
+    update(d=>{d.documents = d.documents.filter(x=>x.id!==id);});
+  }
+
+  const visibleDocs = data.documents.filter(d=>can(currentUser,'view_document',{visibility:d.visibility}));
+  const docs = filter==="All" ? visibleDocs : visibleDocs.filter(d=>d.category===filter);
+
+  function visLabel(vis){
+    if(!vis || vis.type==='everyone') return 'Everyone';
+    if(vis.type==='producers') return 'Producers Only';
+    if(vis.type==='cast') return 'Cast Only';
+    if(vis.type==='owner') return 'Owner Only';
+    if(vis.type==='department') return vis.value+' Only';
+    return 'Everyone';
+  }
+
+  return (
+    <div>
+      <div className="section-title">Production Documents</div>
+
+      {canUpload && (
+        <div className="card">
+          <label className="form-label">Category</label>
+          <select className="form-select" value={category} onChange={e=>setCategory(e.target.value)}>
+            {DOC_CATEGORIES.map(c=><option key={c} value={c}>{c}</option>)}
+          </select>
+
+          {canUploadProduction ? (
+            <>
+              <label className="form-label" style={{marginTop:'12px'}}>Visible To</label>
+              <select className="form-select" value={visType} onChange={e=>setVisType(e.target.value)}>
+                {DOC_VISIBILITY_OPTIONS.map(o=><option key={o.value} value={o.value}>{o.label}</option>)}
+              </select>
+              {visType==='department' && (
+                <select className="form-select" style={{marginTop:'8px'}} value={visDept} onChange={e=>setVisDept(e.target.value)}>
+                  {Object.keys(DEPARTMENT_TREE).map(dep=><option key={dep} value={dep}>{dep}</option>)}
+                </select>
+              )}
+            </>
+          ) : (
+            <div style={{fontSize:'12px',color:'var(--gray)',marginTop:'8px'}}>
+              This will be visible to {currentUser.department} only.
+            </div>
+          )}
+
+          <label className="form-label" style={{marginTop:'12px'}}>Upload File</label>
+          <input type="file" className="form-input" onChange={handleFile}/>
+        </div>
+      )}
+
+      <div className="form-group">
+        <label className="form-label">Filter by Category</label>
+        <select className="form-select" value={filter} onChange={e=>setFilter(e.target.value)}>
+          <option>All</option>
+          {DOC_CATEGORIES.map(c=><option key={c} value={c}>{c}</option>)}
+        </select>
+      </div>
+
+      {docs.length===0 && <div className="empty-state">No documents in this category yet.</div>}
+
+      {docs.map(doc=>(
+        <div key={doc.id} className="list-item">
+          <div className="list-item-head">
+            <div>
+              <div className="list-item-title">{doc.name}</div>
+              <div className="list-item-sub">{doc.category} · Uploaded {doc.date}{doc.uploadedBy?' by '+doc.uploadedBy:''}</div>
+              <div className="list-item-sub" style={{color:'var(--amber)'}}>Visible to: {visLabel(doc.visibility)}</div>
+            </div>
+          </div>
+          <div className="btn-row">
+            <a className="btn-secondary btn-sm" href={doc.fileData} download={doc.name} style={{textDecoration:'none'}}>Download / View</a>
+            {canDelete && <button className="btn-danger btn-sm" onClick={()=>deleteDoc(doc.id)}>Delete</button>}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ============ ANNOUNCEMENTS ============ */
+function Announcements({data,update,role,currentUser}){
+  const canPost = can(currentUser,'post_announcement');
+  const canModerate = can(currentUser,'post_announcement'); // owner & producer can pin/delete
+  const canDeleteAny = can(currentUser,'delete_any_message');
+  const [text,setText] = useState("");
+
+  function post(){
+    if(!canPost) return; // backend-style block
+    if(!text.trim()) return;
+    update(d=>{
+      d.announcements.unshift({id:uid(),text,author:`${currentUser.firstName} ${currentUser.lastName}`,authorId:currentUser.id,date:new Date().toLocaleString(),pinned:false});
+    });
+    setText("");
+  }
+  function togglePin(id){
+    if(!canModerate) return; // backend-style block
+    update(d=>{
+      const a = d.announcements.find(x=>x.id===id);
+      if(a) a.pinned = !a.pinned;
+    });
+  }
+  function del(id){
+    if(!(canModerate || canDeleteAny)) return; // backend-style block
+    if(!confirm("Delete this announcement?")) return;
+    update(d=>{d.announcements = d.announcements.filter(x=>x.id!==id);});
+  }
+
+  const sorted = [...data.announcements].sort((a,b)=>{
+    if(a.pinned!==b.pinned) return a.pinned? -1:1;
+    return 0;
+  });
+
+  return (
+    <div>
+      <div className="section-title">Announcements</div>
+
+      {canPost && (
+        <div className="card">
+          <div className="form-group">
+            <label className="form-label">New Announcement</label>
+            <textarea className="form-textarea" placeholder="e.g. Call time moved to 8:00 AM." value={text} onChange={e=>setText(e.target.value)}/>
+          </div>
+          <button className="btn" onClick={post}>Post Announcement</button>
+        </div>
+      )}
+
+      {sorted.length===0 && <div className="empty-state">No announcements yet.</div>}
+      {sorted.map(a=>(
+        <div key={a.id} className={"msg-card"+(a.pinned?' pinned':'')}>
+          <div className="msg-head">
+            <span className="msg-author">{a.pinned && '📌 '}{a.author}</span>
+            <span className="msg-meta">{a.date}</span>
+          </div>
+          <div className="msg-body">{a.text}</div>
+          {(canModerate || canDeleteAny) && (
+            <div className="msg-actions">
+              {canModerate && <button className="btn-secondary btn-sm" onClick={()=>togglePin(a.id)}>{a.pinned?'Unpin':'Pin'}</button>}
+              <button className="btn-danger btn-sm" onClick={()=>del(a.id)}>Delete</button>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ============ MESSAGE WALL ============ */
+function MessageWall({data,update,role,currentUser}){
+  const [text,setText] = useState("");
+  const [channel,setChannel] = useState("General");
+  const [filter,setFilter] = useState("All");
+
+  const channels = ["General","Announcements","Urgent Updates",...Object.keys(DEPARTMENT_TREE).map(d=>d+" — Department")];
+
+  function post(){
+    if(!text.trim()) return;
+    update(d=>{
+      d.messages.unshift({
+        id:uid(),text,author:`${currentUser.firstName} ${currentUser.lastName}`,
+        authorId:currentUser.id,dept:currentUser.department,channel,
+        date:new Date().toLocaleString(),pinned:false
+      });
+    });
+    setText("");
+  }
+
+  function togglePin(msg){
+    const msgDept = (msg.channel||"").replace(" — Department","");
+    const isDeptChannel = (msg.channel||"").includes(" — Department");
+    const allowed = can(currentUser,'pin_production_message') ||
+      (isDeptChannel && can(currentUser,'pin_department_message') && currentUser.department===msgDept);
+    if(!allowed) return; // backend-style block
+    update(d=>{
+      const m = d.messages.find(x=>x.id===msg.id);
+      if(m) m.pinned = !m.pinned;
+    });
+  }
+
+  function del(msg){
+    const isOwnPost = msg.authorId === currentUser.id;
+    const allowed = can(currentUser,'delete_any_message') || (can(currentUser,'delete_own_message') && isOwnPost);
+    if(!allowed) return; // backend-style block
+    if(!confirm("Delete this message?")) return;
+    update(d=>{d.messages = d.messages.filter(x=>x.id!==msg.id);});
+  }
+
+  let msgs = [...data.messages];
+  if(filter!=="All") msgs = msgs.filter(m=>m.channel===filter);
+  msgs.sort((a,b)=>{ if(a.pinned!==b.pinned) return a.pinned?-1:1; return 0; });
+
+  return (
+    <div>
+      <div className="section-title">Message Wall</div>
+
+      <div className="card">
+        <div className="form-group">
+          <label className="form-label">Channel</label>
+          <select className="form-select" value={channel} onChange={e=>setChannel(e.target.value)}>
+            {channels.map(c=><option key={c} value={c}>{c}</option>)}
+          </select>
+        </div>
+        <div className="form-group">
+          <label className="form-label">Message</label>
+          <textarea className="form-textarea" value={text} onChange={e=>setText(e.target.value)} placeholder="Post to the production wall..."/>
+        </div>
+        <button className="btn" onClick={post}>Post Message</button>
+      </div>
+
+      <div className="form-group">
+        <label className="form-label">Filter by Channel</label>
+        <select className="form-select" value={filter} onChange={e=>setFilter(e.target.value)}>
+          <option>All</option>
+          {channels.map(c=><option key={c} value={c}>{c}</option>)}
+        </select>
+      </div>
+
+      {msgs.length===0 && <div className="empty-state">No messages yet. Be the first to post.</div>}
+      {msgs.map(m=>{
+        const msgDept = (m.channel||"").replace(" — Department","");
+        const isDeptChannel = (m.channel||"").includes(" — Department");
+        const canPin = can(currentUser,'pin_production_message') ||
+          (isDeptChannel && can(currentUser,'pin_department_message') && currentUser.department===msgDept);
+        const canDel = can(currentUser,'delete_any_message') || (m.authorId===currentUser.id);
+        return (
+          <div key={m.id} className={"msg-card"+(m.pinned?' pinned':'')}>
+            <div className="msg-head">
+              <span className="msg-author">{m.pinned && '📌 '}{m.author}</span>
+              <span className="msg-meta">{m.date}</span>
+            </div>
+            <div className="msg-tags"><span className="pill">{m.channel||'General'}</span></div>
+            <div className="msg-body" style={{marginTop:'8px'}}>{m.text}</div>
+            {(canPin || canDel) && (
+              <div className="msg-actions">
+                {canPin && <button className="btn-secondary btn-sm" onClick={()=>togglePin(m)}>{m.pinned?'Unpin':'Pin'}</button>}
+                {canDel && <button className="btn-danger btn-sm" onClick={()=>del(m)}>Delete</button>}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ============ DEPARTMENTS ============ */
+function Departments({data,update,role,currentUser}){
+  const canEdit = role==='owner'; // assigning department heads / structure is an Owner power
+  const [showAdd,setShowAdd] = useState(false);
+  const [edit,setEdit] = useState(null);
+  const blank = {name:'',head:'',contact:'',members:'',notes:'',responsibilities:''};
+  const [form,setForm] = useState(blank);
+
+  function addDept(){
+    if(!canEdit) return; // backend-style block
+    if(!form.name.trim()) return;
+    update(d=>{d.departments.push({...form,id:uid()});});
+    setForm(blank);
+    setShowAdd(false);
+  }
+  function saveDept(){
+    if(!canEdit) return; // backend-style block
+    update(d=>{
+      const idx = d.departments.findIndex(x=>x.id===edit.id);
+      if(idx>-1) d.departments[idx]=edit;
+    });
+    setEdit(null);
+  }
+  function delDept(id){
+    if(!canEdit) return; // backend-style block
+    if(!confirm("Delete this department?")) return;
+    update(d=>{d.departments = d.departments.filter(x=>x.id!==id);});
+  }
+
+  return (
+    <div>
+      <div className="section-title">Departments &amp; Team Structure</div>
+
+      {data.departments.length===0 && <div className="empty-state">No departments set up yet.</div>}
+
+      {data.departments.map(dept=>(
+        <div key={dept.id} className="list-item">
+          {edit && edit.id===dept.id ? (
+            <DeptEditForm form={edit} setForm={setEdit} onSave={saveDept} onCancel={()=>setEdit(null)}/>
+          ) : (
+            <>
+              <div className="list-item-title">{dept.name}</div>
+              <div className="dept-head-block">
+                <div className="card-row"><span className="label">Department Head</span><span className="value">{dept.head||'—'}</span></div>
+                <div className="card-row"><span className="label">Contact</span><span className="value">{dept.contact||'—'}</span></div>
+              </div>
+              <div style={{marginTop:'10px'}}>
+                <div className="label" style={{fontFamily:'var(--mono)',fontSize:'10px',color:'var(--gray-dim)',letterSpacing:'1px',textTransform:'uppercase'}}>Team Members</div>
+                <div className="field-display" style={{marginTop:'4px'}}>{dept.members||'—'}</div>
+              </div>
+              {dept.responsibilities && (
+                <div style={{marginTop:'10px'}}>
+                  <div className="label" style={{fontFamily:'var(--mono)',fontSize:'10px',color:'var(--gray-dim)',letterSpacing:'1px',textTransform:'uppercase'}}>Responsibilities</div>
+                  <div className="field-display" style={{marginTop:'4px',whiteSpace:'pre-wrap'}}>{dept.responsibilities}</div>
+                </div>
+              )}
+              {dept.notes && (
+                <div style={{marginTop:'10px'}}>
+                  <div className="label" style={{fontFamily:'var(--mono)',fontSize:'10px',color:'var(--gray-dim)',letterSpacing:'1px',textTransform:'uppercase'}}>Notes</div>
+                  <div className="field-display" style={{marginTop:'4px',whiteSpace:'pre-wrap'}}>{dept.notes}</div>
+                </div>
+              )}
+              {canEdit && (
+                <div className="btn-row">
+                  <button className="btn-secondary btn-sm" onClick={()=>setEdit(dept)}>Edit</button>
+                  <button className="btn-danger btn-sm" onClick={()=>delDept(dept.id)}>Delete</button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      ))}
+
+      {canEdit && !showAdd && <div className="btn-row"><button className="btn" onClick={()=>setShowAdd(true)}>+ Add Department</button></div>}
+      {canEdit && showAdd && (
+        <div className="card">
+          <DeptEditForm form={form} setForm={setForm} onSave={addDept} onCancel={()=>{setForm(blank);setShowAdd(false);}} addMode/>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DeptEditForm({form,setForm,onSave,onCancel,addMode}){
+  return (
+    <div>
+      <div className="form-group"><label className="form-label">Department Name</label><input className="form-input" value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></div>
+      <div className="form-group"><label className="form-label">Department Head</label><input className="form-input" value={form.head} onChange={e=>setForm({...form,head:e.target.value})}/></div>
+      <div className="form-group"><label className="form-label">Contact Info</label><input className="form-input" value={form.contact} onChange={e=>setForm({...form,contact:e.target.value})}/></div>
+      <div className="form-group"><label className="form-label">Team Members</label><textarea className="form-textarea" placeholder="One per line" value={form.members} onChange={e=>setForm({...form,members:e.target.value})}/></div>
+      <div className="form-group"><label className="form-label">Responsibilities</label><textarea className="form-textarea" value={form.responsibilities} onChange={e=>setForm({...form,responsibilities:e.target.value})}/></div>
+      <div className="form-group"><label className="form-label">Notes</label><textarea className="form-textarea" value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})}/></div>
+      <div className="btn-row">
+        <button className="btn" onClick={onSave}>{addMode?'Add Department':'Save Changes'}</button>
+        <button className="btn-secondary" onClick={onCancel}>Cancel</button>
+      </div>
+    </div>
+  );
+}
+
+/* ============ CREW DIRECTORY ============ */
+function CrewDirectory({data,update,role,currentUser}){
+  const canEdit = role==='owner' || role==='producer'; // roster management
+  const canEditPrivate = role==='owner'; // private contact info: owner only
+  const [search,setSearch] = useState("");
+  const [showAdd,setShowAdd] = useState(false);
+  const [edit,setEdit] = useState(null);
+  const blank = {name:'',role:'',department:'',phone:'',email:'',emergency:'',notes:'',callTime:''};
+  const [form,setForm] = useState(blank);
+
+  function addCrew(){
+    if(!canEdit) return; // backend-style block
+    if(!form.name.trim()) return;
+    update(d=>{d.crew.push({...form,id:uid()});});
+    setForm(blank);
+    setShowAdd(false);
+  }
+  function saveCrew(){
+    if(!canEdit) return; // backend-style block
+    update(d=>{
+      const idx = d.crew.findIndex(x=>x.id===edit.id);
+      if(idx>-1) d.crew[idx]=edit;
+    });
+    setEdit(null);
+  }
+  function delCrew(id){
+    if(!canEdit) return; // backend-style block
+    if(!confirm("Remove this person?")) return;
+    update(d=>{d.crew = d.crew.filter(x=>x.id!==id);});
+  }
+
+  const filtered = data.crew.filter(c=>{
+    const q = search.toLowerCase();
+    return c.name.toLowerCase().includes(q) || c.role.toLowerCase().includes(q) || c.department.toLowerCase().includes(q);
+  });
+
+  return (
+    <div>
+      <div className="section-title">Cast &amp; Crew Directory</div>
+
+      <div className="form-group">
+        <input className="form-input" placeholder="Search by name, role, or department..." value={search} onChange={e=>setSearch(e.target.value)}/>
+      </div>
+
+      {filtered.length===0 && <div className="empty-state">No matching people found.</div>}
+
+      {filtered.map(c=>(
+        <div key={c.id} className="list-item">
+          {edit && edit.id===c.id ? (
+            <CrewEditForm form={edit} setForm={setEdit} onSave={saveCrew} onCancel={()=>setEdit(null)} canEdit={canEdit} canEditPrivate={canEditPrivate}/>
+          ) : (
+            <>
+              <div className="list-item-head">
+                <div>
+                  <div className="list-item-title">{c.name}</div>
+                  <div className="list-item-sub">{c.role}{c.department?' · '+c.department:''}</div>
+                </div>
+                {c.callTime && <span className="pill">{c.callTime}</span>}
+              </div>
+              <div className="detail-grid">
+                {canEditPrivate && <div><div className="label">Phone</div><div className="value">{c.phone||'—'}</div></div>}
+                {canEditPrivate && <div><div className="label">Email</div><div className="value">{c.email||'—'}</div></div>}
+                {canEditPrivate && c.emergency && <div><div className="label">Emergency Contact</div><div className="value">{c.emergency}</div></div>}
+                {c.notes && <div><div className="label">Notes</div><div className="value">{c.notes}</div></div>}
+              </div>
+              {canEdit && (
+                <div className="btn-row">
+                  <button className="btn-secondary btn-sm" onClick={()=>setEdit(c)}>Edit</button>
+                  <button className="btn-danger btn-sm" onClick={()=>delCrew(c.id)}>Delete</button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      ))}
+
+      {canEdit && !showAdd && <div className="btn-row"><button className="btn" onClick={()=>setShowAdd(true)}>+ Add Person</button></div>}
+      {canEdit && showAdd && (
+        <div className="card">
+          <CrewEditForm form={form} setForm={setForm} onSave={addCrew} onCancel={()=>{setForm(blank);setShowAdd(false);}} addMode canEdit={canEdit} canEditPrivate={canEditPrivate}/>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CrewEditForm({form,setForm,onSave,onCancel,addMode,canEdit,canEditPrivate}){
+  return (
+    <div>
+      <div className="form-group"><label className="form-label">Name</label><input className="form-input" value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></div>
+      <div className="form-row">
+        <div className="form-group"><label className="form-label">Role</label><input className="form-input" value={form.role} onChange={e=>setForm({...form,role:e.target.value})}/></div>
+        <div className="form-group"><label className="form-label">Department</label><input className="form-input" value={form.department} onChange={e=>setForm({...form,department:e.target.value})}/></div>
+      </div>
+      {canEditPrivate && (
+        <div className="form-row">
+          <div className="form-group"><label className="form-label">Phone</label><input className="form-input" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})}/></div>
+          <div className="form-group"><label className="form-label">Email</label><input className="form-input" value={form.email} onChange={e=>setForm({...form,email:e.target.value})}/></div>
+        </div>
+      )}
+      {canEditPrivate && (
+        <div className="form-group"><label className="form-label">Emergency Contact (optional)</label><input className="form-input" value={form.emergency} onChange={e=>setForm({...form,emergency:e.target.value})}/></div>
+      )}
+      <div className="form-row">
+        <div className="form-group"><label className="form-label">Call Time (if applicable)</label><input className="form-input" value={form.callTime} onChange={e=>setForm({...form,callTime:e.target.value})}/></div>
+        <div className="form-group"><label className="form-label">Notes</label><input className="form-input" value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})}/></div>
+      </div>
+      <div className="btn-row">
+        <button className="btn" onClick={onSave}>{addMode?'Add Person':'Save Changes'}</button>
+        <button className="btn-secondary" onClick={onCancel}>Cancel</button>
+      </div>
+    </div>
+  );
+}
+
+/* ============ CHECKLIST ============ */
+function Checklist({data,update,compact}){
+  function toggle(id){
+    update(d=>{
+      const item = d.checklist.find(x=>x.id===id);
+      if(item) item.checked = !item.checked;
+    });
+  }
+  return (
+    <div>
+      {data.checklist.map(item=>(
+        <div key={item.id} className="check-item" onClick={()=>toggle(item.id)}>
+          <div className={"check-box"+(item.checked?' checked':'')}>{item.checked?'✓':''}</div>
+          <div className={"check-label"+(item.checked?' checked':'')}>{item.label}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ============ NOTIFICATION CENTER ============ */
+function NotificationCenter({data,currentUser,role,update,markNotifRead}){
+  const canSendAny = role==='owner' || role==='producer' || role==='depthead';
+  const canSendUrgent = can(currentUser,'send_urgent_alert',{deptHeadsCanUrgent:data.meta.deptHeadsCanUrgent});
+  const canSendRoleGroups = can(currentUser,'send_notification_role_group');
+
+  const [text,setText] = useState("");
+  const [targetType,setTargetType] = useState(role==='depthead' ? 'department' : 'all');
+  const [targetDept,setTargetDept] = useState(role==='depthead' ? currentUser.department : Object.keys(DEPARTMENT_TREE)[0]);
+  const [targetRole,setTargetRole] = useState('producers');
+  const [targetUser,setTargetUser] = useState("");
+  const [urgent,setUrgent] = useState(false);
+  const [expandedId,setExpandedId] = useState(null);
+
+  const myNotifs = data.notifications.filter(n=>notifTargets(n,currentUser,data)).sort((a,b)=>new Date(b.date)-new Date(a.date));
+
+  // available target types per role
+  const targetTypeOptions = [];
+  if(role==='owner' || role==='producer'){
+    targetTypeOptions.push({value:'all',label:'Everyone'});
+    targetTypeOptions.push({value:'department',label:'Specific Department'});
+    if(role==='owner') targetTypeOptions.push({value:'role',label:'Role Group'});
+    if(role==='producer'){
+      targetTypeOptions.push({value:'cast',label:'Cast'});
+      targetTypeOptions.push({value:'crew',label:'Crew'});
+    }
+    targetTypeOptions.push({value:'user',label:'Individual User'});
+  }else if(role==='depthead'){
+    targetTypeOptions.push({value:'department',label:'My Department'});
+    targetTypeOptions.push({value:'user',label:'Person in My Department'});
+  }
+
+  // user options for individual-target picker, scoped by role
+  const userOptions = role==='depthead'
+    ? data.users.filter(u=>u.department===currentUser.department && u.id!==currentUser.id)
+    : data.users.filter(u=>u.id!==currentUser.id);
+
+  function send(){
+    if(!canSendAny) return; // backend-style block
+    if(!text.trim()) return;
+
+    let target = {type:'all',value:null};
+    if(targetType==='department') target = {type:'department',value: role==='depthead' ? currentUser.department : targetDept};
+    if(targetType==='cast') target = {type:'department',value:'Cast'};
+    if(targetType==='crew') target = {type:'role',value:'crew'};
+    if(targetType==='role') target = {type:'role',value:targetRole};
+    if(targetType==='user') target = {type:'user',value:targetUser};
+
+    // Permission re-check on the actual computed target (defense in depth)
+    let allowed = false;
+    if(target.type==='all') allowed = can(currentUser,'send_notification_all');
+    else if(target.type==='department') allowed = can(currentUser,'send_notification_to_department',{department:target.value});
+    else if(target.type==='role') allowed = can(currentUser,'send_notification_role_group');
+    else if(target.type==='user'){
+      const targetUserObj = data.users.find(u=>u.id===target.value);
+      allowed = can(currentUser,'send_notification_to_user',{targetUserDepartment: targetUserObj ? targetUserObj.department : null});
+    }
+    if(!allowed) return; // backend-style block
+
+    const isUrgent = urgent && can(currentUser,'send_urgent_alert',{deptHeadsCanUrgent:data.meta.deptHeadsCanUrgent});
+
+    update(d=>{
+      d.notifications.unshift({
+        id:uid(),text,author:`${currentUser.firstName} ${currentUser.lastName}`,authorId:currentUser.id,
+        date:new Date().toLocaleString(),urgent:isUrgent,target,reads:{}
+      });
+    });
+    setText("");
+    setUrgent(false);
+  }
+
+  // mark visible notifs as read when viewed
+  useEffect(()=>{
+    myNotifs.forEach(n=>{
+      if(!(n.reads && n.reads[currentUser.id])) markNotifRead(n.id);
+    });
+  },[]);
+
+  function targetDisplay(n){
+    if(n.target.type==='all') return 'To: Everyone';
+    if(n.target.type==='department') return 'To: '+n.target.value;
+    if(n.target.type==='role') return 'To: '+roleLabel(n.target.value==='crew'?'crew':n.target.value==='producers'?'producer':n.target.value==='depthead'?'depthead':n.target.value)+' (group)';
+    return 'Direct Message';
+  }
+
+  return (
+    <div>
+      <div className="section-title">Message Center</div>
+
+      {canSendAny && (
+        <div className="card">
+          <div className="dash-tile-title">Send a Message</div>
+          <div className="form-group">
+            <label className="form-label">Send To</label>
+            <div className="target-select-grid">
+              {targetTypeOptions.map(t=>(
+                <button key={t.value} className={"tab-btn"+(targetType===t.value?' active':'')} onClick={()=>setTargetType(t.value)}>
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          {targetType==='department' && role!=='depthead' && (
+            <div className="form-group">
+              <label className="form-label">Department</label>
+              <select className="form-select" value={targetDept} onChange={e=>setTargetDept(e.target.value)}>
+                {Object.keys(DEPARTMENT_TREE).map(dep=><option key={dep} value={dep}>{dep}</option>)}
+              </select>
+            </div>
+          )}
+          {targetType==='department' && role==='depthead' && (
+            <div style={{fontSize:'12px',color:'var(--gray)',marginBottom:'10px'}}>
+              This message will go to everyone in {currentUser.department}.
+            </div>
+          )}
+          {targetType==='role' && (
+            <div className="form-group">
+              <label className="form-label">Role Group</label>
+              <select className="form-select" value={targetRole} onChange={e=>setTargetRole(e.target.value)}>
+                <option value="producers">Producers</option>
+                <option value="depthead">Department Heads</option>
+                <option value="cast">Cast</option>
+                <option value="crew">Crew</option>
+              </select>
+            </div>
+          )}
+          {targetType==='user' && (
+            <div className="form-group">
+              <label className="form-label">{role==='depthead' ? 'Person in My Department' : 'User'}</label>
+              <select className="form-select" value={targetUser} onChange={e=>setTargetUser(e.target.value)}>
+                <option value="">Select person...</option>
+                {userOptions.map(u=><option key={u.id} value={u.id}>{u.firstName} {u.lastName} — {u.department}</option>)}
+              </select>
+            </div>
+          )}
+          <div className="form-group">
+            <label className="form-label">Message</label>
+            <textarea className="form-textarea" placeholder="e.g. Call time moved to 8:00 AM for everyone." value={text} onChange={e=>setText(e.target.value)}/>
+          </div>
+          {canSendUrgent ? (
+            <div className="check-item" onClick={()=>setUrgent(!urgent)}>
+              <div className={"check-box"+(urgent?' checked':'')}>{urgent?'✓':''}</div>
+              <div className="check-label">Mark as Urgent Alert (pop-up on login)</div>
+            </div>
+          ) : (
+            role==='depthead' && (
+              <div style={{fontSize:'11px',color:'var(--gray-dim)',marginBottom:'8px',fontFamily:'var(--mono)',letterSpacing:'1px'}}>
+                URGENT ALERTS REQUIRE OWNER PERMISSION
+              </div>
+            )
+          )}
+          <div className="btn-row">
+            <button className="btn" onClick={send}>Send Message</button>
+          </div>
+        </div>
+      )}
+
+      {!canSendAny && (
+        <div className="empty-state">You can view messages sent to you here. Only production leadership can send new messages.</div>
+      )}
+
+      {myNotifs.length===0 && <div className="empty-state">No messages yet.</div>}
+      {myNotifs.map(n=>{
+        const canSeeReadStatus = n.authorId===currentUser.id && (role==='owner'||role==='producer'||role==='depthead');
+        const totalRecipients = n.target.type==='all' ? data.users.length
+          : n.target.type==='department' ? data.users.filter(u=>u.department===n.target.value).length
+          : n.target.type==='role' ? data.users.filter(u=>notifTargets(n,u,data)).length
+          : 1;
+        const readCount = Object.keys(n.reads||{}).length;
+        const recipients = n.target.type==='all' ? data.users
+          : n.target.type==='department' ? data.users.filter(u=>u.department===n.target.value)
+          : n.target.type==='role' ? data.users.filter(u=>notifTargets(n,u,data))
+          : data.users.filter(u=>u.id===n.target.value);
+        return (
+          <div key={n.id} className={"notif-card"+(n.urgent?' urgent':'')}>
+            <div className="notif-target">
+              {n.urgent && '⚠ URGENT · '}
+              {targetDisplay(n)}
+            </div>
+            <div className="msg-head"><span className="msg-author">{n.author}</span><span className="msg-meta">{n.date}</span></div>
+            <div className="msg-body">{n.text}</div>
+            {canSeeReadStatus && (
+              <>
+                <div className="read-status" onClick={()=>setExpandedId(expandedId===n.id?null:n.id)} style={{cursor:'pointer'}}>
+                  Viewed by {readCount} of {totalRecipients} {expandedId===n.id?'▲':'▼'}
+                </div>
+                {expandedId===n.id && (
+                  <div className="read-list">
+                    {recipients.length===0 && <div>No recipients on file.</div>}
+                    {recipients.map(u=>(
+                      <div key={u.id} className="read-list-row">
+                        <span>{u.firstName} {u.lastName} ({u.department})</span>
+                        <span className={n.reads && n.reads[u.id] ? 'read-yes':'read-no'}>
+                          {n.reads && n.reads[u.id] ? '✓ Viewed '+new Date(n.reads[u.id]).toLocaleString() : 'Not viewed'}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ============ CAST DASHBOARD ============ */
+function CastDashboard({data,currentUser,update,role}){
+  const canEdit = role==='owner' || role==='producer';
+  const [showAddScene,setShowAddScene] = useState(false);
+  const blankScene = {sceneNumbers:'',shootDate:'',callTime:'',status:'upcoming'};
+  const [sceneForm,setSceneForm] = useState(blankScene);
+
+  const blankVersion = {version:'',revisionDate:'',uploadedBy:'',note:'',fileData:'',fileName:''};
+  const [versionForm,setVersionForm] = useState(blankVersion);
+  const [showAddVersion,setShowAddVersion] = useState(false);
+
+  const blankNote = {title:'',type:'Character Bio',content:'',fileData:'',fileName:''};
+  const [noteForm,setNoteForm] = useState(blankNote);
+  const [showAddNote,setShowAddNote] = useState(false);
+
+  function addScene(){
+    if(!sceneForm.sceneNumbers.trim()) return;
+    update(d=>{d.myScenes.push({...sceneForm,id:uid()});});
+    setSceneForm(blankScene);
+    setShowAddScene(false);
+  }
+  function delScene(id){
+    update(d=>{d.myScenes=d.myScenes.filter(s=>s.id!==id);});
+  }
+
+  function handleVersionFile(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      setVersionForm({...versionForm,fileData:reader.result,fileName:file.name});
+    };
+    reader.readAsDataURL(file);
+  }
+  function addVersion(){
+    if(!versionForm.version.trim()) return;
+    update(d=>{d.scriptVersions.unshift({...versionForm,id:uid()});});
+    setVersionForm(blankVersion);
+    setShowAddVersion(false);
+  }
+  function delVersion(id){
+    update(d=>{d.scriptVersions=d.scriptVersions.filter(v=>v.id!==id);});
+  }
+
+  function handleNoteFile(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      setNoteForm({...noteForm,fileData:reader.result,fileName:file.name});
+    };
+    reader.readAsDataURL(file);
+  }
+  function addNote(){
+    if(!noteForm.title.trim()) return;
+    update(d=>{d.characterNotes.unshift({...noteForm,id:uid()});});
+    setNoteForm(blankNote);
+    setShowAddNote(false);
+  }
+  function delNote(id){
+    update(d=>{d.characterNotes=d.characterNotes.filter(n=>n.id!==id);});
+  }
+
+  const castAnnouncements = data.announcements.filter(a=>true); // shared feed for now
+
+  return (
+    <div>
+      <div className="section-title">Cast Dashboard</div>
+
+      {/* My Scenes */}
+      <div className="dash-tile">
+        <div className="dash-tile-title">My Scenes</div>
+        {data.myScenes.length===0 && <div className="empty-state">No scenes scheduled yet.</div>}
+        {data.myScenes.map(s=>(
+          <div key={s.id} className="card-row" style={{flexDirection:'column',alignItems:'flex-start',gap:'4px'}}>
+            <div style={{display:'flex',justifyContent:'space-between',width:'100%'}}>
+              <span className="value">Scene(s) {s.sceneNumbers}</span>
+              <span className={"status-tag status-"+(s.status==='shooting'?'shooting':s.status==='completed'?'completed':'upcoming')}>{s.status}</span>
+            </div>
+            <span className="label">{fmtDate(s.shootDate)} · Call: {s.callTime||'—'}</span>
+            {canEdit && <button className="btn-danger btn-sm" style={{marginTop:'4px'}} onClick={()=>delScene(s.id)}>Remove</button>}
+          </div>
+        ))}
+        {canEdit && !showAddScene && <div className="btn-row"><button className="btn-secondary btn-sm" onClick={()=>setShowAddScene(true)}>+ Add Scene</button></div>}
+        {canEdit && showAddScene && (
+          <div style={{marginTop:'10px'}}>
+            <div className="form-group"><label className="form-label">Scene Number(s)</label><input className="form-input" value={sceneForm.sceneNumbers} onChange={e=>setSceneForm({...sceneForm,sceneNumbers:e.target.value})}/></div>
+            <div className="form-row">
+              <div className="form-group"><label className="form-label">Shoot Date</label><input className="form-input" type="date" value={sceneForm.shootDate} onChange={e=>setSceneForm({...sceneForm,shootDate:e.target.value})}/></div>
+              <div className="form-group"><label className="form-label">Call Time</label><input className="form-input" value={sceneForm.callTime} onChange={e=>setSceneForm({...sceneForm,callTime:e.target.value})}/></div>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Status</label>
+              <select className="form-select" value={sceneForm.status} onChange={e=>setSceneForm({...sceneForm,status:e.target.value})}>
+                <option value="upcoming">Upcoming</option>
+                <option value="shooting">Shooting Today</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
+            <div className="btn-row"><button className="btn btn-sm" onClick={addScene}>Add</button><button className="btn-secondary btn-sm" onClick={()=>setShowAddScene(false)}>Cancel</button></div>
+          </div>
+        )}
+      </div>
+
+      {/* Script Updates */}
+      <div className="dash-tile">
+        <div className="dash-tile-title">Script Updates</div>
+        {data.scriptVersions.length===0 && <div className="empty-state">No script versions uploaded yet.</div>}
+        {data.scriptVersions.map(v=>(
+          <div key={v.id} className="version-row">
+            <div>
+              <div className="version-tag">Script Revision {v.version}</div>
+              <div className="version-meta">Uploaded {fmtDate(v.revisionDate)} · By {v.uploadedBy||'Production'}{v.note?' · '+v.note:''}</div>
+            </div>
+            <div style={{display:'flex',gap:'6px'}}>
+              {v.fileData && <a className="btn-secondary btn-sm" href={v.fileData} download={v.fileName} style={{textDecoration:'none'}}>View</a>}
+              {canEdit && <button className="btn-danger btn-sm" onClick={()=>delVersion(v.id)}>Delete</button>}
+            </div>
+          </div>
+        ))}
+        {canEdit && !showAddVersion && <div className="btn-row"><button className="btn-secondary btn-sm" onClick={()=>setShowAddVersion(true)}>+ Upload Script / Revision</button></div>}
+        {canEdit && showAddVersion && (
+          <div style={{marginTop:'10px'}}>
+            <div className="form-row">
+              <div className="form-group"><label className="form-label">Version Number</label><input className="form-input" placeholder="e.g. 3.2" value={versionForm.version} onChange={e=>setVersionForm({...versionForm,version:e.target.value})}/></div>
+              <div className="form-group"><label className="form-label">Revision Date</label><input className="form-input" type="date" value={versionForm.revisionDate} onChange={e=>setVersionForm({...versionForm,revisionDate:e.target.value})}/></div>
+            </div>
+            <div className="form-group"><label className="form-label">Uploaded By</label><input className="form-input" value={versionForm.uploadedBy} onChange={e=>setVersionForm({...versionForm,uploadedBy:e.target.value})}/></div>
+            <div className="form-group"><label className="form-label">Note (e.g. Updated Pages 12–17)</label><input className="form-input" value={versionForm.note} onChange={e=>setVersionForm({...versionForm,note:e.target.value})}/></div>
+            <div className="form-group"><label className="form-label">File (Full Script, Sides, Colored Pages)</label><input type="file" className="form-input" onChange={handleVersionFile}/></div>
+            <div className="btn-row"><button className="btn btn-sm" onClick={addVersion}>Upload</button><button className="btn-secondary btn-sm" onClick={()=>setShowAddVersion(false)}>Cancel</button></div>
+          </div>
+        )}
+      </div>
+
+      {/* Cast Announcements */}
+      <div className="dash-tile">
+        <div className="dash-tile-title">Cast Announcements</div>
+        {castAnnouncements.length===0 && <div className="empty-state">No announcements yet.</div>}
+        {castAnnouncements.slice(0,5).map(a=>(
+          <div key={a.id} className="msg-card" style={{marginBottom:'8px'}}>
+            <div className="msg-head"><span className="msg-author">{a.author}</span><span className="msg-meta">{a.date}</span></div>
+            <div className="msg-body">{a.text}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Character Notes */}
+      <div className="dash-tile">
+        <div className="dash-tile-title">Character Notes</div>
+        {data.characterNotes.length===0 && <div className="empty-state">No character notes uploaded yet.</div>}
+        {data.characterNotes.map(n=>(
+          <div key={n.id} className="version-row">
+            <div>
+              <div className="version-tag">{n.title}</div>
+              <div className="version-meta">{n.type}</div>
+              {n.content && <div style={{fontSize:'13px',marginTop:'4px',whiteSpace:'pre-wrap'}}>{n.content}</div>}
+            </div>
+            <div style={{display:'flex',gap:'6px'}}>
+              {n.fileData && <a className="btn-secondary btn-sm" href={n.fileData} download={n.fileName} style={{textDecoration:'none'}}>View</a>}
+              {canEdit && <button className="btn-danger btn-sm" onClick={()=>delNote(n.id)}>Delete</button>}
+            </div>
+          </div>
+        ))}
+        {canEdit && !showAddNote && <div className="btn-row"><button className="btn-secondary btn-sm" onClick={()=>setShowAddNote(true)}>+ Add Character Note</button></div>}
+        {canEdit && showAddNote && (
+          <div style={{marginTop:'10px'}}>
+            <div className="form-row">
+              <div className="form-group"><label className="form-label">Title</label><input className="form-input" value={noteForm.title} onChange={e=>setNoteForm({...noteForm,title:e.target.value})}/></div>
+              <div className="form-group">
+                <label className="form-label">Type</label>
+                <select className="form-select" value={noteForm.type} onChange={e=>setNoteForm({...noteForm,type:e.target.value})}>
+                  <option>Character Bio</option>
+                  <option>Accent Notes</option>
+                  <option>Research Material</option>
+                  <option>Reference Video</option>
+                </select>
+              </div>
+            </div>
+            <div className="form-group"><label className="form-label">Notes / Description</label><textarea className="form-textarea" value={noteForm.content} onChange={e=>setNoteForm({...noteForm,content:e.target.value})}/></div>
+            <div className="form-group"><label className="form-label">Attach File (optional)</label><input type="file" className="form-input" onChange={handleNoteFile}/></div>
+            <div className="btn-row"><button className="btn btn-sm" onClick={addNote}>Add</button><button className="btn-secondary btn-sm" onClick={()=>setShowAddNote(false)}>Cancel</button></div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ============ DEPARTMENT DASHBOARD ============ */
+const DEPT_DASH_PRESETS = {
+  "Camera":["Shot List","Camera Notes","Equipment Notes","Lens Package Info"],
+  "Sound":["Audio Notes","Equipment Needs","Wireless Frequency Updates"],
+  "Art Department":["Set Prep Notes","Props List","Build Schedules"],
+  "Wardrobe":["Costume Notes","Fittings","Continuity References"],
+};
+
+function DeptDashboard({data,currentUser,update,role}){
+  const deptName = currentUser.department;
+  const canEdit = role==='owner' || role==='producer' ||
+    data.departments.some(dp=>dp.name===deptName && dp.head===`${currentUser.firstName} ${currentUser.lastName}`);
+  const dash = data.deptDashboards[deptName] || {notes:'', items:[]};
+  const [notes,setNotes] = useState(dash.notes);
+  const presetLabels = DEPT_DASH_PRESETS[deptName] || ["Department Notes","Equipment Needs","Updates"];
+  const [newLabel,setNewLabel] = useState(presetLabels[0]);
+  const [newValue,setNewValue] = useState('');
+
+  function saveNotes(){
+    update(d=>{
+      if(!d.deptDashboards[deptName]) d.deptDashboards[deptName] = {notes:'',items:[]};
+      d.deptDashboards[deptName].notes = notes;
+    });
+  }
+  function addItem(){
+    if(!newValue.trim()) return;
+    update(d=>{
+      if(!d.deptDashboards[deptName]) d.deptDashboards[deptName] = {notes:'',items:[]};
+      d.deptDashboards[deptName].items.unshift({id:uid(),label:newLabel,value:newValue,date:new Date().toLocaleDateString()});
+    });
+    setNewValue('');
+  }
+  function delItem(id){
+    update(d=>{
+      d.deptDashboards[deptName].items = d.deptDashboards[deptName].items.filter(i=>i.id!==id);
+    });
+  }
+
+  const deptInfo = data.departments.find(dp=>dp.name===deptName);
+  const deptMembers = data.users.filter(u=>u.department===deptName);
+
+  return (
+    <div>
+      <div className="section-title">{deptName} Dashboard</div>
+
+      {deptInfo && (
+        <div className="card">
+          <Row label="Department Head" value={deptInfo.head}/>
+          <Row label="Contact" value={deptInfo.contact}/>
+        </div>
+      )}
+
+      <div className="dash-tile">
+        <div className="dash-tile-title">Department Notes</div>
+        {canEdit ? (
+          <>
+            <textarea className="form-textarea" value={notes} onChange={e=>setNotes(e.target.value)} placeholder="General notes for the department..."/>
+            <div className="btn-row"><button className="btn-secondary btn-sm" onClick={saveNotes}>Save Notes</button></div>
+          </>
+        ) : (
+          <div style={{whiteSpace:'pre-wrap',fontSize:'14px'}}>{notes || '—'}</div>
+        )}
+      </div>
+
+      <div className="dash-tile">
+        <div className="dash-tile-title">Updates &amp; Info</div>
+        {(dash.items||[]).length===0 && <div className="empty-state">No items posted yet.</div>}
+        {(dash.items||[]).map(item=>(
+          <div key={item.id} className="version-row">
+            <div>
+              <div className="version-tag">{item.label}</div>
+              <div style={{fontSize:'13px',marginTop:'2px'}}>{item.value}</div>
+              <div className="version-meta">{item.date}</div>
+            </div>
+            {canEdit && <button className="btn-danger btn-sm" onClick={()=>delItem(item.id)}>Delete</button>}
+          </div>
+        ))}
+        {canEdit && (
+          <div style={{marginTop:'10px'}}>
+            <div className="form-row">
+              <div className="form-group">
+                <label className="form-label">Category</label>
+                <select className="form-select" value={newLabel} onChange={e=>setNewLabel(e.target.value)}>
+                  {presetLabels.map(l=><option key={l} value={l}>{l}</option>)}
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+            <div className="form-group"><label className="form-label">Details</label><textarea className="form-textarea" value={newValue} onChange={e=>setNewValue(e.target.value)}/></div>
+            <div className="btn-row"><button className="btn btn-sm" onClick={addItem}>Post Update</button></div>
+          </div>
+        )}
+      </div>
+
+      <div className="dash-tile">
+        <div className="dash-tile-title">{deptName} Team Members</div>
+        {deptMembers.length===0 && <div className="empty-state">No one has joined this department yet.</div>}
+        {deptMembers.map(u=>(
+          <div key={u.id} className="card-row"><span className="value">{u.firstName} {u.lastName}</span><span className="label">{u.position}</span></div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ============ PRODUCER DASHBOARD ============ */
+function ProducerDashboard({data,currentUser,role}){
+  const statusCounts = {upcoming:0,shooting:0,completed:0,changed:0};
+  data.schedule.days.forEach(d=>{ if(statusCounts[d.status]!==undefined) statusCounts[d.status]++; });
+  const checklistDone = data.checklist.filter(c=>c.checked).length;
+
+  return (
+    <div>
+      <div className="section-title">Producer Dashboard</div>
+
+      <div className="dash-tile">
+        <div className="dash-tile-title">Shooting Progress</div>
+        <div className="big-stat">
+          <div>
+            <div className="num">{data.meta.currentDay}/{data.meta.totalDays}</div>
+            <div className="sub">Shoot Days Complete</div>
+          </div>
+        </div>
+        <div className="stat-row">
+          <div className="stat-box"><div className="stat-num" style={{color:'var(--green)'}}>{statusCounts.completed}</div><div className="stat-label">Completed</div></div>
+          <div className="stat-box"><div className="stat-num">{statusCounts.shooting}</div><div className="stat-label">Shooting Today</div></div>
+          <div className="stat-box"><div className="stat-num" style={{color:'var(--gray)'}}>{statusCounts.upcoming}</div><div className="stat-label">Upcoming</div></div>
+          <div className="stat-box"><div className="stat-num" style={{color:'var(--red)'}}>{statusCounts.changed}</div><div className="stat-label">Changed</div></div>
+        </div>
+      </div>
+
+      <div className="dash-tile">
+        <div className="dash-tile-title">Today's Daily Report</div>
+        <Row label="Shoot Day" value={`Day ${data.todaysShoot.day||data.meta.currentDay}`}/>
+        <Row label="Scenes" value={data.todaysShoot.scenes}/>
+        <Row label="Page Count" value={data.todaysShoot.pageCount}/>
+        <Row label="Crew Call / Wrap" value={`${data.todaysShoot.crewCall||'—'} / ${data.todaysShoot.wrap||'—'}`}/>
+        <Row label="Daily Checklist" value={`${checklistDone} of ${data.checklist.length} complete`}/>
+      </div>
+
+      <div className="dash-tile">
+        <div className="dash-tile-title">Department Updates</div>
+        {Object.keys(data.deptDashboards).length===0 && <div className="empty-state">No department updates yet.</div>}
+        {Object.entries(data.deptDashboards).map(([dept,dash])=>(
+          (dash.items && dash.items.length>0) && (
+            <div key={dept} style={{marginBottom:'10px'}}>
+              <div className="version-tag">{dept}</div>
+              {dash.items.slice(0,2).map(item=>(
+                <div key={item.id} style={{fontSize:'13px',color:'var(--gray)',marginTop:'2px'}}>{item.label}: {item.value}</div>
+              ))}
+            </div>
+          )
+        ))}
+      </div>
+
+      <div className="dash-tile">
+        <div className="dash-tile-title">Production Announcements</div>
+        {data.announcements.slice(0,3).map(a=>(
+          <div key={a.id} className="msg-card" style={{marginBottom:'8px'}}>
+            <div className="msg-head"><span className="msg-author">{a.author}</span><span className="msg-meta">{a.date}</span></div>
+            <div className="msg-body">{a.text}</div>
+          </div>
+        ))}
+        {data.announcements.length===0 && <div className="empty-state">No announcements yet.</div>}
+      </div>
+
+      <div className="dash-tile">
+        <div className="dash-tile-title">Budget Status &amp; Investor Updates</div>
+        <div className="empty-state">Coming in a future upgrade.</div>
+      </div>
+    </div>
+  );
+}
+
+
+/* ============ USER ROLES PANEL (Owner Only) ============ */
+function UserRolesPanel({data,update,currentUser}){
+  const canManage = can(currentUser,'manage_user_roles');
+
+  function setRoleOverride(userId, roleOverride){
+    if(!canManage) return; // backend-style block
+    update(d=>{
+      const u = d.users.find(x=>x.id===userId);
+      if(u) u.roleOverride = roleOverride || null;
+    });
+  }
+
+  function setDeptHead(deptName, userId){
+    if(!canManage) return; // backend-style block
+    const user = data.users.find(u=>u.id===userId);
+    update(d=>{
+      let dept = d.departments.find(dp=>dp.name===deptName);
+      if(!dept){
+        dept = {id:uid(),name:deptName,head:'',contact:'',members:'',notes:'',responsibilities:''};
+        d.departments.push(dept);
+      }
+      dept.head = user ? `${user.firstName} ${user.lastName}` : '';
+    });
+  }
+
+  function removeUser(userId){
+    if(!canManage) return; // backend-style block
+    const user = data.users.find(u=>u.id===userId);
+    if(user && user.isOwner){
+      alert("The Owner account cannot be removed.");
+      return;
+    }
+    if(!confirm("Remove this user from the production roster?")) return;
+    update(d=>{
+      d.users = d.users.filter(u=>u.id!==userId);
+      d.departments.forEach(dp=>{
+        if(user && dp.head===`${user.firstName} ${user.lastName}`) dp.head='';
+      });
+    });
+  }
+
+  return (
+    <div>
+      <div className="card">
+        <div className="dash-tile-title">Assign Department Heads</div>
+        {Object.keys(DEPARTMENT_TREE).map(deptName=>{
+          const dept = data.departments.find(dp=>dp.name===deptName);
+          const currentHeadName = dept ? dept.head : '';
+          const eligible = data.users.filter(u=>u.department===deptName);
+          const currentHeadUser = data.users.find(u=>`${u.firstName} ${u.lastName}`===currentHeadName);
+          return (
+            <div key={deptName} className="form-group">
+              <label className="form-label">{deptName}</label>
+              <select className="form-select" value={currentHeadUser?currentHeadUser.id:''} onChange={e=>setDeptHead(deptName,e.target.value)}>
+                <option value="">No department head assigned</option>
+                {eligible.map(u=><option key={u.id} value={u.id}>{u.firstName} {u.lastName} — {u.position}</option>)}
+              </select>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="card">
+        <div className="dash-tile-title">All Users &amp; Role Overrides</div>
+        {data.users.length===0 && <div className="empty-state">No one has joined the production yet.</div>}
+        {data.users.map(u=>{
+          const computed = computeRole(u,data);
+          return (
+            <div key={u.id} className="list-item">
+              <div className="list-item-head">
+                <div>
+                  <div className="list-item-title">{u.firstName} {u.lastName}{u.isOwner?' (Owner)':''}</div>
+                  <div className="list-item-sub">{u.department} · {u.position}</div>
+                </div>
+                <span className="pill">{roleLabel(computed)}</span>
+              </div>
+              {!u.isOwner && (
+                <>
+                  <div className="form-group" style={{marginTop:'10px'}}>
+                    <label className="form-label">Manual Role Override</label>
+                    <select className="form-select" value={u.roleOverride||''} onChange={e=>setRoleOverride(u.id,e.target.value)}>
+                      <option value="">Use computed role ({roleLabel(computeRole({...u,roleOverride:null},data))})</option>
+                      <option value="producer">Producer / Head of Production</option>
+                      <option value="depthead">Department Head</option>
+                      <option value="cast">Cast / Actor</option>
+                      <option value="crew">Crew / Team Member</option>
+                    </select>
+                  </div>
+                  <div className="btn-row">
+                    <button className="btn-danger btn-sm" onClick={()=>removeUser(u.id)}>Remove User</button>
+                  </div>
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function Admin({data,update,setAuthed,currentUser}){
+  // Defense in depth: even though this component only renders for role==='owner',
+  // every mutating action re-checks permission before writing to data.
+  const isOwner = can(currentUser,'access_admin');
+
+  const [adminTab,setAdminTab] = useState('general');
+  const [newPw,setNewPw] = useState('');
+  const [newOwnerPw,setNewOwnerPw] = useState('');
+  const [newTitle,setNewTitle] = useState(data.meta.title);
+  const [bannerText,setBannerText] = useState(data.banner.text);
+  const [bannerPinned,setBannerPinned] = useState(data.banner.pinned);
+  const [showResetConfirm,setShowResetConfirm] = useState(false);
+
+  function changePassword(){
+    if(!can(currentUser,'change_production_password')) return; // backend-style block
+    if(!newPw.trim()) return;
+    update(d=>{d.meta.password = newPw;});
+    setNewPw('');
+    alert("Production password updated.");
+  }
+  function changeOwnerPassword(){
+    if(!can(currentUser,'change_owner_password')) return; // backend-style block
+    if(!newOwnerPw.trim()) return;
+    update(d=>{d.meta.ownerPassword = newOwnerPw;});
+    setNewOwnerPw('');
+    alert("Owner password updated. Keep this private — it gives permanent full access across all productions.");
+  }
+  function changeTitle(){
+    if(!can(currentUser,'global_settings')) return; // backend-style block
+    update(d=>{d.meta.title = newTitle;});
+    alert("Production title updated.");
+  }
+  function changeDays(field,val){
+    if(!can(currentUser,'global_settings')) return; // backend-style block
+    update(d=>{d.meta[field] = parseInt(val)||0;});
+  }
+  function toggleDeptHeadsUrgent(){
+    if(!can(currentUser,'global_settings')) return; // backend-style block
+    update(d=>{d.meta.deptHeadsCanUrgent = !d.meta.deptHeadsCanUrgent;});
+  }
+  function saveBanner(){
+    if(!can(currentUser,'global_settings')) return; // backend-style block
+    update(d=>{d.banner = {text:bannerText,pinned:bannerPinned};});
+  }
+  function resetProduction(){
+    if(!can(currentUser,'reset_production')) return; // backend-style block
+    update(d=>{
+      const newMeta = {...d.meta, currentDay:1, resetVersion:(d.meta.resetVersion||1)+1};
+      Object.assign(d, JSON.parse(JSON.stringify(DEFAULT_DATA)));
+      d.meta = newMeta;
+      d.meta.title = "NEW PRODUCTION";
+    });
+    setShowResetConfirm(false);
+    setAuthed(false);
+  }
+
+  if(!isOwner) return <AccessDenied/>;
+
+  return (
+    <div>
+      <div className="section-title">Admin Control Panel</div>
+
+      <div className="tabs-row">
+        <button className={"tab-btn"+(adminTab==='general'?' active':'')} onClick={()=>setAdminTab('general')}>General</button>
+        <button className={"tab-btn"+(adminTab==='users'?' active':'')} onClick={()=>setAdminTab('users')}>Users &amp; Roles</button>
+        <button className={"tab-btn"+(adminTab==='banner'?' active':'')} onClick={()=>setAdminTab('banner')}>Banner</button>
+        <button className={"tab-btn"+(adminTab==='checklist'?' active':'')} onClick={()=>setAdminTab('checklist')}>Checklist</button>
+        <button className={"tab-btn"+(adminTab==='reset'?' active':'')} onClick={()=>setAdminTab('reset')}>Reset</button>
+      </div>
+
+      {adminTab==='general' && (
+        <div className="card">
+          <div className="form-group">
+            <label className="form-label">Production Title</label>
+            <input className="form-input" value={newTitle} onChange={e=>setNewTitle(e.target.value)}/>
+            <div className="btn-row"><button className="btn-secondary btn-sm" onClick={changeTitle}>Update Title</button></div>
+          </div>
+
+          <div className="form-group" style={{marginTop:'20px'}}>
+            <label className="form-label">Production Password</label>
+            <input className="form-input" type="text" placeholder="New password" value={newPw} onChange={e=>setNewPw(e.target.value)}/>
+            <div className="btn-row"><button className="btn-secondary btn-sm" onClick={changePassword}>Update Password</button></div>
+          </div>
+
+          <div className="form-group" style={{marginTop:'20px'}}>
+            <label className="form-label">Owner Password (Permanent Access — Keep Private)</label>
+            <input className="form-input" type="text" placeholder="New owner password" value={newOwnerPw} onChange={e=>setNewOwnerPw(e.target.value)}/>
+            <div className="btn-row"><button className="btn-secondary btn-sm" onClick={changeOwnerPassword}>Update Owner Password</button></div>
+          </div>
+
+          <div className="form-row" style={{marginTop:'20px'}}>
+            <div className="form-group">
+              <label className="form-label">Current Shoot Day</label>
+              <input className="form-input" type="number" value={data.meta.currentDay} onChange={e=>changeDays('currentDay',e.target.value)}/>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Total Shoot Days</label>
+              <input className="form-input" type="number" value={data.meta.totalDays} onChange={e=>changeDays('totalDays',e.target.value)}/>
+            </div>
+          </div>
+
+          <div className="check-item" style={{marginTop:'20px'}} onClick={toggleDeptHeadsUrgent}>
+            <div className={"check-box"+(data.meta.deptHeadsCanUrgent?' checked':'')}>{data.meta.deptHeadsCanUrgent?'✓':''}</div>
+            <div className="check-label">Allow Department Heads to send production-wide Urgent Alerts</div>
+          </div>
+        </div>
+      )}
+
+      {adminTab==='users' && <UserRolesPanel data={data} update={update} currentUser={currentUser}/>}
+
+      {adminTab==='banner' && (
+        <div className="card">
+          <div className="form-group">
+            <label className="form-label">Quick Announcement Banner</label>
+            <textarea className="form-textarea" placeholder="e.g. Lunch moved to 1:30 PM at base camp." value={bannerText} onChange={e=>setBannerText(e.target.value)}/>
+          </div>
+          <div className="check-item" onClick={()=>setBannerPinned(!bannerPinned)}>
+            <div className={"check-box"+(bannerPinned?' checked':'')}>{bannerPinned?'✓':''}</div>
+            <div className="check-label">Mark as pinned / urgent</div>
+          </div>
+          <div className="btn-row">
+            <button className="btn" onClick={saveBanner}>Save Banner</button>
+            <button className="btn-secondary" onClick={()=>{setBannerText('');setBannerPinned(false);update(d=>{d.banner={text:'',pinned:false};});}}>Clear Banner</button>
+          </div>
+        </div>
+      )}
+
+      {adminTab==='checklist' && (
+        <div className="card">
+          <Checklist data={data} update={update}/>
+        </div>
+      )}
+
+      {adminTab==='reset' && (
+        <div className="card" style={{borderColor:'var(--red)'}}>
+          <div className="warn-text" style={{color:'var(--red)',fontWeight:700,marginBottom:'10px'}}>RESET FOR NEW PRODUCTION</div>
+          <div className="warn-text">
+            This clears the current schedule, documents, announcements, messages, departments, crew list, shoot days, scenes, script versions, character notes, and resets the daily checklist. Your Owner password stays the same so you retain access. The production password and title will need to be set again.
+          </div>
+          <button className="btn-danger" onClick={()=>setShowResetConfirm(true)}>Reset for New Production</button>
+        </div>
+      )}
+
+      {showResetConfirm && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3 style={{color:'var(--red)'}}>Confirm Reset</h3>
+            <div className="warn-text">
+              Are you sure? This will remove the current schedule, documents, messages, departments, and crew list. This action cannot be undone.
+            </div>
+            <div className="btn-row">
+              <button className="btn-danger" onClick={resetProduction}>Yes, Reset Everything</button>
+              <button className="btn-secondary" onClick={()=>setShowResetConfirm(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
